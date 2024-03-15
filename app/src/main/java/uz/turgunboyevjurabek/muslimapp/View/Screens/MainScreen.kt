@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,13 +50,16 @@ import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
+import androidx.navigation.NavController
 import uz.turgunboyevjurabek.muslimapp.R
+import uz.turgunboyevjurabek.muslimapp.View.ButtonNavigation.ButtonNavigation
+import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
 import uz.turgunboyevjurabek.muslimapp.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.View.shape.RoundedPolygonShape
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -139,43 +143,14 @@ fun MainScreen() {
                     }
 
                 }
+
             },
             bottomBar = {
-                BottomAppBar(
-                ) {
-                  Row(modifier = Modifier
-                      .fillMaxSize(),
-                  ) {
-                      Box(modifier = Modifier
-                          .fillMaxHeight()
-                          .weight(1f)
-                      ){
-                         Column(modifier = Modifier
-                             .fillMaxSize(),
-                             horizontalAlignment = Alignment.CenterHorizontally,
-                             verticalArrangement = Arrangement.Center
-                         ) {
-                             Icon(imageVector = Icons.Default.Home, contentDescription = null,Modifier.size(30.dp))
-                             Text(text = "Asosiy")
-                         }
-                      }
-                      Box(modifier = Modifier
-                          .fillMaxHeight()
-                          .weight(1f)
-                      ){
-                          Column(modifier = Modifier
-                              .fillMaxSize(),
-                              horizontalAlignment = Alignment.CenterHorizontally,
-                              verticalArrangement = Arrangement.Center
-                          ) {
-                              Icon(imageVector = Icons.Default.AddCircle, contentDescription = null,Modifier.size(30.dp))
-                              Text(text = "Tasbex")
-                          }
-                      }
-                  }
-                }
+                ButtonNavigation(navController = navController)
             }
         )
+
+
 
     }
 
@@ -193,7 +168,8 @@ fun BottomNavigation(function: () -> Unit) {
 @Preview(showSystemUi = true)
 @Composable
 fun UiMain() {
-    MainScreen()
+
+    MainScreen(navController = NavController(context = LocalContext.current))
 
 }
 
