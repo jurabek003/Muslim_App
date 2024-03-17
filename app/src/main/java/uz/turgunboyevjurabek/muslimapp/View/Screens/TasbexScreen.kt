@@ -20,7 +20,7 @@ fun TasbexScreen(navController: NavController) {
 
             },
             bottomBar = {
-                ButtonNavigation(navController = navController)
+
             }
         )
 

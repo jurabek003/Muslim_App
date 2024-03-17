@@ -71,4 +71,9 @@ dependencies {
      * For Shape
      */
     implementation ("androidx.graphics:graphics-shapes:1.0.0-alpha05")
+    /**
+     * For Navigation
+     */
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
 }

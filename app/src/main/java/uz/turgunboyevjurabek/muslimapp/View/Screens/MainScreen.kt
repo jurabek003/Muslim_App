@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -61,94 +62,79 @@ import uz.turgunboyevjurabek.muslimapp.View.shape.RoundedPolygonShape
 @Composable
 fun MainScreen(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+
     ) {
-        Scaffold(
-            modifier = Modifier,
-            content = {
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding()
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+        ) {
+            ElevatedCard(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .statusBarsPadding()
+                    .height(250.dp),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(30.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .paint(
+                            painter = painterResource(id = R.drawable.img_5),
+                            contentScale = ContentScale.FillBounds
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val hexagon = remember {
-                        RoundedPolygon(
-                            5, rounding = CornerRounding(1.0f)
+                    Column {
+                        Text(
+                            text = "Peshin",
+                            fontSize = 40.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp,)
+                        )
+                        Text(
+                            text = "12.12.1221",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+                        )
+                        Text(
+                            text = "12:45",
+                            fontSize = 30.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp, top = 10.dp)
                         )
                     }
-                    val clip = remember(hexagon) {
-                        RoundedPolygonShape(polygon = hexagon)
-                    }
-                    ElevatedCard(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .statusBarsPadding()
-                            .height(250.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = CardDefaults.cardElevation(30.dp)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .paint(
-                                    painter = painterResource(id = R.drawable.img_5),
-                                    contentScale = ContentScale.FillBounds
-                                ),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Peshin",
-                                    fontSize = 40.sp,
-                                    fontFamily = FontFamily.Serif,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(start = 20.dp,)
-                                )
-                                Text(
-                                    text = "12.12.1221",
-                                    fontSize = 20.sp,
-                                    fontFamily = FontFamily.Serif,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-                                )
-                                Text(
-                                    text = "12:45",
-                                    fontSize = 30.sp,
-                                    fontFamily = FontFamily.Serif,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = "Farg'ona",
-                                    fontSize = 25.sp,
-                                    fontFamily = FontFamily.Serif,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(end = 20.dp, top = 20.dp)
-                                )
-                                Text(
-                                    text = "Dushanba",
-                                    fontSize = 20.sp,
-                                    fontFamily = FontFamily.Serif,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(end = 20.dp, top = 10.dp)
-                                )
-                            }
-                        }
-
+                        Text(
+                            text = "Farg'ona",
+                            fontSize = 25.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(end = 20.dp, top = 20.dp)
+                        )
+                        Text(
+                            text = "Dushanba",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(end = 20.dp, top = 10.dp)
+                        )
                     }
-
                 }
 
-            },
-            bottomBar = {
-                ButtonNavigation(navController = navController)
             }
-        )
+
+        }
+
 
 
 
