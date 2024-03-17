@@ -60,18 +60,11 @@ import uz.turgunboyevjurabek.muslimapp.View.shape.RoundedPolygonShape
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-
-    ) {
         Column(modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
         ) {
             ElevatedCard(
                 modifier = Modifier
-                    .padding(10.dp)
-                    .statusBarsPadding()
+                    .padding( start = 15.dp,end=15.dp)
                     .height(250.dp),
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(30.dp)
@@ -133,12 +126,6 @@ fun MainScreen(navController: NavController) {
             }
 
         }
-
-
-
-
-    }
-
 }
 
 @Composable

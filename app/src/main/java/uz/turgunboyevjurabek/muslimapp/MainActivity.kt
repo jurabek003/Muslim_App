@@ -1,4 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class
+)
 
 package uz.turgunboyevjurabek.muslimapp
 
@@ -6,16 +8,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -31,6 +27,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,36 +94,27 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val navController= rememberNavController()
+                    var screenName by rememberSaveable {
+                        mutableStateOf("")
+                    }
                     Scaffold(modifier = Modifier.fillMaxSize(),
-                        content = {
-                            NavHost(navController = navController, startDestination = "MainScreen"){
-                                composable("MainScreen"){
-                                    MainScreen(navController=navController)
-                                }
-                                composable("TasbexScreen"){
-                                    TasbexScreen(navController = navController)
-                                }
-                                composable("Dayof7Screen"){
-                                    Dayof7Screen()
-                                }
-                                composable("Dayof30Screen"){
-                                    Dayof30Screen()
-                                }
-
-                            }
-
-                    },
+                        topBar = {
+                                 TopAppBar(title = { Text(
+                                     text = screenName.toString(),
+                                     color = MaterialTheme.colorScheme.primary
+                                 )})
+                        },
                         bottomBar = {
                         var selectedTabIndex by rememberSaveable {
                             mutableStateOf(0)
                         }
-
                         NavigationBar {
                             items.forEachIndexed { index, bottomNavigationItem ->
                                 NavigationBarItem(selected = selectedTabIndex == index,
                                     onClick = {
                                         selectedTabIndex = index
                                         navController.navigate(bottomNavigationItem.screenRout)
+                                        screenName=bottomNavigationItem.title
                                               },
                                     label = { Text(text = bottomNavigationItem.title) },
                                     icon = {
@@ -153,7 +141,28 @@ class MainActivity : ComponentActivity() {
 
                             }
                         }
-                    })
+                    }
+                    ){innerPadding->
+                        Column(modifier = Modifier
+                            .padding(innerPadding)) {
+                            NavHost(navController = navController, startDestination = "MainScreen"){
+                                composable("MainScreen"){
+                                    MainScreen(navController=navController)
+                                }
+                                composable("TasbexScreen"){
+                                    TasbexScreen(navController = navController)
+                                }
+                                composable("Dayof7Screen"){
+                                    Dayof7Screen()
+                                }
+                                composable("Dayof30Screen"){
+                                    Dayof30Screen()
+                                }
+
+                            }
+                        }
+
+                    }
                 }
             }
         }
