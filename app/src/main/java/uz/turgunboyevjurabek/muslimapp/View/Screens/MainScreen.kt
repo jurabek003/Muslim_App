@@ -53,7 +53,6 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
 import androidx.navigation.NavController
 import uz.turgunboyevjurabek.muslimapp.R
-import uz.turgunboyevjurabek.muslimapp.View.ButtonNavigation.ButtonNavigation
 import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
 import uz.turgunboyevjurabek.muslimapp.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.View.shape.RoundedPolygonShape
