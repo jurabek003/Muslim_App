@@ -32,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -69,20 +69,24 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
     /**
      * For Shape
      */
     implementation ("androidx.graphics:graphics-shapes:1.0.0-alpha05")
+
     /**
      * For Navigation
      */
     implementation ("androidx.navigation:navigation-compose:2.7.7")
+
     /**
      * Dagger-hilt
      */
-    implementation ("com.google.dagger:hilt-android:2.48")
+    implementation ("com.google.dagger:hilt-android:2.49")
     kapt ("com.google.dagger:hilt-compiler:2.48")
-    implementation ("androidx.hilt:hilt-navigation-fragment:1.1.0")
+    implementation ("androidx.hilt:hilt-navigation-fragment:1.2.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     /**
      * Retrofit for API requests
@@ -95,6 +99,18 @@ dependencies {
      * ViewModel
      */
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    /**
+     * Kotlin Coroutines
+     */
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+
+    /**
+     * Room database
+     */
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
 
 }

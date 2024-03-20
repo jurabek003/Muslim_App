@@ -1,4 +1,5 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+@file:OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
     ExperimentalMaterial3Api::class
 )
 
@@ -6,6 +7,9 @@ package uz.turgunboyevjurabek.muslimapp
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.provider.CalendarContract.Colors
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
@@ -24,11 +29,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,20 +45,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import uz.turgunboyevjurabek.muslimapp.Model.navigation.BottomNavigationItem
+import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof30Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
 import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
+import uz.turgunboyevjurabek.muslimapp.ViewModel.Bugungilik.BugungilkLogika
 import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,10 +76,10 @@ class MainActivity : ComponentActivity() {
                 val items = listOf(
                     BottomNavigationItem(
                         title = "Asosiy",
-                        selectedIcon = painterResource(id = R.drawable.i30days_select),
-                        unselectedIcon = painterResource(id = R.drawable.i30days_unselect),
+                        selectedIcon = painterResource(id = R.drawable.home_selected),
+                        unselectedIcon = painterResource(id = R.drawable.home_unselected),
                         screenRout = "MainScreen",
-                        badgeCount = 7
+                        badgeCount = 0
                     ),
                     BottomNavigationItem(
                         title = "Tasbex",
@@ -93,69 +108,81 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val navController= rememberNavController()
+
+                    val navController = rememberNavController()
                     var screenName by rememberSaveable {
                         mutableStateOf("")
                     }
                     Scaffold(modifier = Modifier.fillMaxSize(),
                         topBar = {
-                                 TopAppBar(title = { Text(
-                                     text = screenName.toString(),
-                                     color = MaterialTheme.colorScheme.primary
-                                 )})
+                            TopAppBar(title = {
+                                Text(
+                                    text = screenName.toString(),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            })
                         },
                         bottomBar = {
-                        var selectedTabIndex by rememberSaveable {
-                            mutableStateOf(0)
-                        }
-                        NavigationBar {
-                            items.forEachIndexed { index, bottomNavigationItem ->
-                                NavigationBarItem(selected = selectedTabIndex == index,
-                                    onClick = {
-                                        selectedTabIndex = index
-                                        navController.navigate(bottomNavigationItem.screenRout)
-                                        screenName=bottomNavigationItem.title
-                                              },
-                                    label = { Text(text = bottomNavigationItem.title) },
-                                    icon = {
-                                        BadgedBox(badge = {
-                                            if (bottomNavigationItem.badgeCount!=0){
-                                                Badge(content = {
-                                                    Text(text = bottomNavigationItem.badgeCount.toString())
-                                                })
+                            var selectedTabIndex by rememberSaveable {
+                                mutableStateOf(0)
+                            }
+                            NavigationBar {
+                                items.forEachIndexed { index, bottomNavigationItem ->
+                                    NavigationBarItem(
+                                        selected = selectedTabIndex == index,
+                                        onClick = {
+                                            selectedTabIndex = index
+                                            navController.navigate(bottomNavigationItem.screenRout)
+                                            screenName = bottomNavigationItem.title
+                                        },
+                                        alwaysShowLabel = false,
+                                        label = { Text(text = bottomNavigationItem.title, fontWeight = FontWeight.ExtraBold) },
+                                        icon = {
+                                            BadgedBox(badge = {
+                                                if (bottomNavigationItem.badgeCount != 0) {
+                                                    Badge(content = {
+                                                        Text(text = bottomNavigationItem.badgeCount.toString())
+                                                    })
+                                                }
+                                            }) {
+                                                Icon(
+                                                    painter = if (selectedTabIndex == index) {
+                                                        bottomNavigationItem.selectedIcon
+                                                    } else {
+                                                        bottomNavigationItem.unselectedIcon
+                                                    },
+                                                    contentDescription = bottomNavigationItem.title,
+                                                    modifier = Modifier.size(25.dp)
+                                                )
                                             }
-                                        }) {
-                                            Icon(
-                                                painter = if (selectedTabIndex == index) {
-                                                    bottomNavigationItem.selectedIcon
-                                                } else {
-                                                    bottomNavigationItem.unselectedIcon
-                                                },
-                                                contentDescription = bottomNavigationItem.title,
-                                                modifier = Modifier.size(25.dp)
-                                            )
                                         }
-                                    }
 
-                                )
+                                    )
 
+                                }
                             }
                         }
-                    }
-                    ){innerPadding->
-                        Column(modifier = Modifier
-                            .padding(innerPadding)) {
-                            NavHost(navController = navController, startDestination = "MainScreen"){
-                                composable("MainScreen"){
-                                    MainScreen(navController=navController)
+                    ) { innerPadding ->
+                        Column(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                        ) {
+
+
+                            NavHost(
+                                navController = navController,
+                                startDestination = "MainScreen"
+                            ) {
+                                composable("MainScreen") {
+                                    MainScreen(navController = navController)
                                 }
-                                composable("TasbexScreen"){
+                                composable("TasbexScreen") {
                                     TasbexScreen(navController = navController)
                                 }
-                                composable("Dayof7Screen"){
+                                composable("Dayof7Screen") {
                                     Dayof7Screen()
                                 }
-                                composable("Dayof30Screen"){
+                                composable("Dayof30Screen") {
                                     Dayof30Screen()
                                 }
 

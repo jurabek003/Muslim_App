@@ -1,6 +1,12 @@
 package uz.turgunboyevjurabek.muslimapp.View.Screens
 
 import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -31,9 +37,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,98 +61,185 @@ import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+
+import uz.turgunboyevjurabek.muslimapp.Model.madels.bugungilik.Bugungi
+import uz.turgunboyevjurabek.muslimapp.Model.madels.timeConverter.DateConverter
+import uz.turgunboyevjurabek.muslimapp.Model.network.ApiService
+import uz.turgunboyevjurabek.muslimapp.Model.repozitory.MyRepozitor
+import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
 import uz.turgunboyevjurabek.muslimapp.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.View.shape.RoundedPolygonShape
+import uz.turgunboyevjurabek.muslimapp.ViewModel.Bugungilik.BugungilkLogika
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.Date
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat")
 @Composable
-fun MainScreen(navController: NavController) {
-        Column(modifier = Modifier
-        ) {
-            ElevatedCard(
-                modifier = Modifier
-                    .padding( start = 15.dp,end=15.dp)
-                    .height(250.dp),
-                shape = RoundedCornerShape(20.dp),
-                elevation = CardDefaults.cardElevation(30.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .paint(
-                            painter = painterResource(id = R.drawable.img_5),
-                            contentScale = ContentScale.FillBounds
-                        ),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Peshin",
-                            fontSize = 40.sp,
-                            fontFamily = FontFamily.Serif,
-                            color = Color.White,
-                            modifier = Modifier.padding(start = 20.dp,)
-                        )
-                        Text(
-                            text = "12.12.1221",
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily.Serif,
-                            color = Color.White,
-                            modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-                        )
-                        Text(
-                            text = "12:45",
-                            fontSize = 30.sp,
-                            fontFamily = FontFamily.Serif,
-                            color = Color.White,
-                            modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-                        )
+fun MainScreen(navController: NavController,   ) {
+
+    Column(
+        modifier = Modifier
+    ) {
+
+        val todayViewModel= hiltViewModel<BugungilkLogika>()
+        val context = LocalContext.current
+        var todayData by remember {
+            mutableStateOf(Bugungi())
+        }
+
+        LaunchedEffect(key1 = true) {
+            todayViewModel.todayApi().observeForever { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                     }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Farg'ona",
-                            fontSize = 25.sp,
-                            fontFamily = FontFamily.Serif,
-                            color = Color.White,
-                            modifier = Modifier.padding(end = 20.dp, top = 20.dp)
-                        )
-                        Text(
-                            text = "Dushanba",
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily.Serif,
-                            color = Color.White,
-                            modifier = Modifier.padding(end = 20.dp, top = 10.dp)
-                        )
+                    Status.ERROR -> {
+                        Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                    }
+                    Status.SUCCESS -> {
+                        todayData= result.data!!
                     }
                 }
+            }
+        }
+        val time= SimpleDateFormat("HH").format(Date())
+        var timeName=""
+        ElevatedCard(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .height(250.dp),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(30.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .paint(
+                        painter = when (time.toInt()) {
+                            in 1..5 -> {
+                                painterResource(id = R.drawable.img_1)
+                            }
+                            in 8..14 -> {
+                                painterResource(id = R.drawable.img_2)
+                            }
+                            in 14..17 -> {
+                                painterResource(id = R.drawable.img_3)
+                            }
+                            in 17..20 -> {
+                                painterResource(id = R.drawable.img_4)
+                            }
+                            in 20..22 -> {
+                                painterResource(id = R.drawable.img_5)
+                            }
+                            else -> {
+                                painterResource(id = R.drawable.img_1)
+                            }
+                        },
+                        contentScale = ContentScale.FillBounds
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
+                Column {
+                    Text(
+                        text = when(time.toInt()){
+                            in 1..5->{
+                                "Bomdod"
+                            }
+                            in 8..14->{
+                                "Peshin"
+                            }
+                            in 14..17->{
+                                "Asr"
+                            }
+                            in 17..20 ->{
+                                "Shom"
+                            }
+                            in 20..22 ->{
+                                "Hufton"
+                            }
+                            else->{
+                                "Bomdod"
+                            } },
+                        fontSize = 40.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+
+                    Text(
+                        text = todayData?.date.toString(),
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 20.dp, top = 25.dp)
+                    )
+                    Text(
+                        text = when(time.toInt()){
+                            in 1..5->{
+                                todayData.times?.quyosh.toString()
+                            }
+                            in 8..14->{
+                                todayData.times?.peshin.toString()
+                            }
+                            in 14..17->{
+                                todayData.times?.asr.toString()
+                            }
+                            in 17..20 ->{
+                                todayData.times?.shomIftor.toString()
+                            }
+                            in 20..22 ->{
+                                todayData.times?.hufton.toString()
+                            }
+                            else->{
+                                todayData.times?.tongSaharlik.toString()
+                            } },
+                        fontSize = 30.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = todayData.region.toString(),
+                        fontSize = 25.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = Color.White,
+                        modifier = Modifier.padding(end = 20.dp, top = 20.dp)
+                    )
+                    Text(
+                        text = todayData.weekday.toString(),
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = Color.White,
+                        modifier = Modifier.padding(end = 20.dp, top = 10.dp)
+                    )
+
+                }
             }
 
         }
-}
 
-@Composable
-fun BottomNavigation(function: () -> Unit) {
-    val selectableIndex = remember{
-        mutableIntStateOf(0)
     }
-
-    
 }
-
 @Preview(showSystemUi = true)
 @Composable
 fun UiMain() {
-
     MainScreen(navController = NavController(context = LocalContext.current))
-
 }
 
 @Composable
