@@ -1,8 +1,11 @@
 package uz.turgunboyevjurabek.muslimapp.ui.theme
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
 import android.os.Build
+import android.provider.CalendarContract.Colors
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -11,10 +14,13 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import uz.turgunboyevjurabek.muslimapp.R
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -39,6 +45,8 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+
+@SuppressLint("ResourceAsColor")
 @Composable
 fun MuslimAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -59,7 +67,7 @@ fun MuslimAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = if (darkTheme) Color.BLACK else Color.WHITE
+            window.statusBarColor = if (darkTheme) Color.TRANSPARENT else Color.TRANSPARENT
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

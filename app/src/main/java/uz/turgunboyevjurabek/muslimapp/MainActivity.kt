@@ -6,12 +6,17 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract.Colors
 import android.util.Log
+import android.view.WindowInsets
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -34,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,9 +75,11 @@ import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             MuslimAppTheme {
                 val items = listOf(
@@ -111,14 +120,21 @@ class MainActivity : ComponentActivity() {
 
                     val navController = rememberNavController()
                     var screenName by rememberSaveable {
-                        mutableStateOf("")
+                        mutableStateOf("Asosiy")
                     }
                     Scaffold(modifier = Modifier.fillMaxSize(),
                         topBar = {
-                            TopAppBar(title = {
+                            TopAppBar(modifier = Modifier,
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = Color.Transparent,
+                                    titleContentColor = MaterialTheme.colorScheme.primary,
+                                ),
+
+                                title = {
                                 Text(
                                     text = screenName.toString(),
-                                    color = MaterialTheme.colorScheme.primary
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontFamily = FontFamily.Serif
                                 )
                             })
                         },
@@ -132,6 +148,7 @@ class MainActivity : ComponentActivity() {
                                         selected = selectedTabIndex == index,
                                         onClick = {
                                             selectedTabIndex = index
+                                            navController.popBackStack()
                                             navController.navigate(bottomNavigationItem.screenRout)
                                             screenName = bottomNavigationItem.title
                                         },

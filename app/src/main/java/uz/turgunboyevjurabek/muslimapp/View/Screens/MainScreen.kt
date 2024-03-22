@@ -12,6 +12,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -20,20 +22,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +61,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,7 +92,7 @@ import java.util.Date
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat")
 @Composable
-fun MainScreen(navController: NavController,   ) {
+fun MainScreen(navController: NavController ) {
 
     Column(
         modifier = Modifier
@@ -111,14 +119,16 @@ fun MainScreen(navController: NavController,   ) {
                 }
             }
         }
+        /**
+         * vaqti yaqin namoz
+         */
         val time= SimpleDateFormat("HH").format(Date())
-        var timeName=""
         ElevatedCard(
             modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp)
+                .padding(start = 15.dp, end = 15.dp, top = 20.dp)
                 .height(250.dp),
             shape = RoundedCornerShape(20.dp),
-            elevation = CardDefaults.cardElevation(30.dp)
+            elevation = CardDefaults.cardElevation(10.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -128,18 +138,23 @@ fun MainScreen(navController: NavController,   ) {
                             in 1..5 -> {
                                 painterResource(id = R.drawable.img_1)
                             }
+
                             in 8..14 -> {
                                 painterResource(id = R.drawable.img_2)
                             }
+
                             in 14..17 -> {
                                 painterResource(id = R.drawable.img_3)
                             }
+
                             in 17..20 -> {
                                 painterResource(id = R.drawable.img_4)
                             }
+
                             in 20..22 -> {
                                 painterResource(id = R.drawable.img_5)
                             }
+
                             else -> {
                                 painterResource(id = R.drawable.img_1)
                             }
@@ -186,19 +201,19 @@ fun MainScreen(navController: NavController,   ) {
                     )
                     Text(
                         text = when(time.toInt()){
-                            in 1..5->{
+                            in 5..8->{
                                 todayData.times?.quyosh.toString()
                             }
-                            in 8..14->{
+                            in 8..13->{
                                 todayData.times?.peshin.toString()
                             }
-                            in 14..17->{
+                            in 14..16->{
                                 todayData.times?.asr.toString()
                             }
-                            in 17..20 ->{
+                            in 17..19 ->{
                                 todayData.times?.shomIftor.toString()
                             }
-                            in 20..22 ->{
+                            in 20..23 ->{
                                 todayData.times?.hufton.toString()
                             }
                             else->{
@@ -233,6 +248,210 @@ fun MainScreen(navController: NavController,   ) {
             }
 
         }
+//        val scrollableState = rememberScrollableState(consumeScrollDelta = )
+        
+        /**
+         * 5 vaqtlik
+         */
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
+
+            /**
+             * Bomdod
+             */
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        ,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                   Column(
+                       modifier = Modifier
+                           .padding(start = 10.dp),
+                       horizontalAlignment = Alignment.CenterHorizontally,
+                       verticalArrangement = Arrangement.Center
+                   ) {
+                       Text(text = "Bomdod", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                   }
+                    Column(
+                        modifier = Modifier
+                            .padding(end=10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Saharlik  - ${todayData.times?.tongSaharlik}")
+                        Text(text = "Quyosh    - ${todayData.times?.quyosh}")
+                    }
+
+                }
+            }
+
+
+            /**
+             * Peshin
+             */
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        ,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Peshin", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(end=10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Bugun - ${todayData.times?.peshin} da")
+                    }
+
+                }
+            }
+
+
+            /**
+             * Asir
+             */
+             Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        ,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Asir", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(end=10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Bugun - ${todayData.times?.asr} da")
+                    }
+
+                }
+            }
+
+
+            /**
+             * Shom
+             */
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        ,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Shom", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(end=10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Iftor - ${todayData.times?.shomIftor} da")
+                    }
+
+                }
+            }
+
+
+            /**
+             * Hufton
+             */
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 25.dp, bottom = 5.dp)
+                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        ,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Hufton", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(end=10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "Bugun - ${todayData.times?.hufton} da")
+                    }
+
+                }
+            }
+
+
+        }
+
+
 
     }
 }
