@@ -1,6 +1,12 @@
 package uz.turgunboyevjurabek.muslimapp.View.Screens
 
 import android.widget.Toast
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -87,23 +93,33 @@ fun Dayof7Screen(navController: NavController) {
 
 @Composable
 fun ListUi(birhaftalikItem: BirhaftalikItem) {
+    var expandedState  by remember{
+        mutableStateOf(false)
+    }
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(15.dp)
             .height(intrinsicSize = IntrinsicSize.Max),
         elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 20.dp,
-            disabledElevation = 20.dp,
-            draggedElevation = 20.dp,
-            hoveredElevation = 20.dp,
-            pressedElevation = 20.dp,
-            focusedElevation = 20.dp,
+            defaultElevation = 15.dp,
+            disabledElevation = 15.dp,
+            draggedElevation = 15.dp,
+            hoveredElevation = 15.dp,
+            pressedElevation = 15.dp,
+            focusedElevation = 15.dp,
         ),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .clickable { expandedState = !expandedState }
+                .animateContentSize(
+                    animationSpec = tween(
+                        durationMillis = 1000,
+                        easing = LinearOutSlowInEasing
+                    )
+                )
         ) {
 
             Row(
@@ -156,173 +172,176 @@ fun ListUi(birhaftalikItem: BirhaftalikItem) {
             Divider(
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 5.dp),
+                    .padding(top = 5.dp),
                 thickness = 2.5.dp,
 
             )
-            Column(
-                Modifier.padding(10.dp),
-            ) {
+            if (expandedState){
+                Column(
+                    Modifier.padding(10.dp),
+                ) {
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Bomdod",
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Bomdod",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "Saharlik - ${birhaftalikItem.times?.tongSaharlik} da",
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                            Text(
+                                text = "Quyosh - ${birhaftalikItem.times?.quyosh} da",
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
                     }
-                    Column {
-                        Text(
-                            text = "Saharlik - ${birhaftalikItem.times?.tongSaharlik} da",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
-                        Text(
-                            text = "Quyosh - ${birhaftalikItem.times?.quyosh} da",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
+                    Divider(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 5.dp, vertical = 5.dp),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Peshin",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "${birhaftalikItem.times?.peshin} da",
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
                     }
-                }
-                Divider(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp, vertical = 5.dp),
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Peshin",
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
+                    Divider(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 5.dp, vertical = 5.dp),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Asr",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "${birhaftalikItem.times?.asr} da",
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
                     }
-                    Column {
-                        Text(
-                            text = "${birhaftalikItem.times?.peshin} da",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
+                    Divider(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 5.dp, vertical = 5.dp),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Shom",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "Iftorlik - ${birhaftalikItem.times?.shomIftor} da",
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
                     }
-                }
-                Divider(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp, vertical = 5.dp),
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Asr",
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
+                    Divider(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 5.dp, vertical = 5.dp),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Hufton",
+                                fontFamily = FontFamily.Serif,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "${birhaftalikItem.times?.hufton} da",
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(3.dp)
+                            )
+                        }
                     }
-                    Column {
-                        Text(
-                            text = "${birhaftalikItem.times?.asr} da",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
-                    }
-                }
-                Divider(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp, vertical = 5.dp),
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Shom",
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = "Iftorlik - ${birhaftalikItem.times?.shomIftor} da",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
-                    }
-                }
-                Divider(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp, vertical = 5.dp),
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Hufton",
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = "${birhaftalikItem.times?.hufton} da",
-                            fontFamily = FontFamily.Serif,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .padding(3.dp)
-                        )
-                    }
-                }
 
+                }
             }
+
         }
     }
 
