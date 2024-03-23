@@ -21,7 +21,7 @@ fun Navigation():NavController {
             TasbexScreen(navController = navController)
         }
         composable("Dayof7Screen"){
-            Dayof7Screen()
+            Dayof7Screen(navController)
         }
         composable("Dayof30Screen"){
             Dayof30Screen()

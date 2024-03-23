@@ -92,10 +92,11 @@ import java.util.Date
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat")
 @Composable
-fun MainScreen(navController: NavController ) {
+fun MainScreen(navController: NavController) {
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
     ) {
 
         val todayViewModel= hiltViewModel<BugungilkLogika>()
@@ -174,7 +175,7 @@ fun MainScreen(navController: NavController ) {
                             in 8..14->{
                                 "Peshin"
                             }
-                            in 14..17->{
+                            in 14..16->{
                                 "Asr"
                             }
                             in 17..20 ->{

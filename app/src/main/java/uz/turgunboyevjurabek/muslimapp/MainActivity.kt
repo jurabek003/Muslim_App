@@ -40,6 +40,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -122,7 +124,10 @@ class MainActivity : ComponentActivity() {
                     var screenName by rememberSaveable {
                         mutableStateOf("Asosiy")
                     }
-                    Scaffold(modifier = Modifier.fillMaxSize(),
+                    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+                    Scaffold(modifier = Modifier.fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
                             TopAppBar(modifier = Modifier,
                                 colors = TopAppBarDefaults.topAppBarColors(
@@ -136,7 +141,8 @@ class MainActivity : ComponentActivity() {
                                     fontWeight = FontWeight.ExtraBold,
                                     fontFamily = FontFamily.Serif
                                 )
-                            })
+                            },
+                                scrollBehavior = scrollBehavior)
                         },
                         bottomBar = {
                             var selectedTabIndex by rememberSaveable {
@@ -197,7 +203,7 @@ class MainActivity : ComponentActivity() {
                                     TasbexScreen(navController = navController)
                                 }
                                 composable("Dayof7Screen") {
-                                    Dayof7Screen()
+                                    Dayof7Screen(navController =navController)
                                 }
                                 composable("Dayof30Screen") {
                                     Dayof30Screen()
