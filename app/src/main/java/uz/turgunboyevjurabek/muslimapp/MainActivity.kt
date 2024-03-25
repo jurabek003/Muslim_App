@@ -1,5 +1,6 @@
 @file:OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class,
     ExperimentalMaterial3Api::class
 )
 
@@ -24,14 +25,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
@@ -64,6 +70,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import uz.turgunboyevjurabek.muslimapp.Model.cash.DataStore
 import uz.turgunboyevjurabek.muslimapp.Model.navigation.BottomNavigationItem
 import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof30Screen
@@ -77,7 +84,6 @@ import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +124,13 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-
+                    val dataStore=DataStore
+                    val context= LocalContext.current
+                    if (dataStore.REGION.equals("")){
+                        Toast.makeText(context, "bor ${dataStore.REGION}", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(context, "yuq", Toast.LENGTH_SHORT).show()
+                    }
 
                     val navController = rememberNavController()
                     var screenName by rememberSaveable {
@@ -126,23 +138,46 @@ class MainActivity : ComponentActivity() {
                     }
                     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-                    Scaffold(modifier = Modifier.fillMaxSize()
+                    Scaffold(modifier = Modifier
+                        .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
-                            TopAppBar(modifier = Modifier,
+                            MediumTopAppBar(
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = Color.Transparent,
                                     titleContentColor = MaterialTheme.colorScheme.primary,
                                 ),
 
                                 title = {
-                                Text(
-                                    text = screenName.toString(),
-                                    fontWeight = FontWeight.ExtraBold,
-                                    fontFamily = FontFamily.Serif
-                                )
-                            },
-                                scrollBehavior = scrollBehavior)
+                                    Text(
+                                        text = screenName.toString(),
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontFamily = FontFamily.Serif
+                                    )
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = {
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_location),
+                                            contentDescription = "Location Region",
+                                            Modifier.size(25.dp)
+                                        )
+                                    }
+                                },
+                                actions = {
+                                          IconButton(onClick = {
+
+                                          }) {
+                                              Icon(
+                                                  painter = painterResource(id = R.drawable.ic_qibla),
+                                                  contentDescription = "Qibla icon",
+                                                  Modifier.size(30.dp)
+                                              )
+                                          }
+                                },
+                                scrollBehavior = scrollBehavior
+                            )
                         },
                         bottomBar = {
                             var selectedTabIndex by rememberSaveable {
@@ -159,7 +194,12 @@ class MainActivity : ComponentActivity() {
                                             screenName = bottomNavigationItem.title
                                         },
                                         alwaysShowLabel = false,
-                                        label = { Text(text = bottomNavigationItem.title, fontWeight = FontWeight.ExtraBold) },
+                                        label = {
+                                            Text(
+                                                text = bottomNavigationItem.title,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        },
                                         icon = {
                                             BadgedBox(badge = {
                                                 if (bottomNavigationItem.badgeCount != 0) {
@@ -203,7 +243,7 @@ class MainActivity : ComponentActivity() {
                                     TasbexScreen(navController = navController)
                                 }
                                 composable("Dayof7Screen") {
-                                    Dayof7Screen(navController =navController)
+                                    Dayof7Screen(navController = navController)
                                 }
                                 composable("Dayof30Screen") {
                                     Dayof30Screen()

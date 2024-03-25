@@ -85,10 +85,7 @@ fun Dayof7Screen(navController: NavController) {
                 ListUi(birhaftalikItem = weekData[it])
             }
         }
-
-
     }
-
 }
 
 @Composable
