@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -38,6 +39,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
@@ -46,6 +48,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,6 +66,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -77,6 +81,7 @@ import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof30Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
+import uz.turgunboyevjurabek.muslimapp.View.UIutils.SheetDialogUI
 import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
 import uz.turgunboyevjurabek.muslimapp.ViewModel.Bugungilik.BugungilkLogika
 import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
@@ -124,11 +129,12 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    val dataStore=DataStore
-                    val context= LocalContext.current
-                    if (dataStore.REGION.equals("")){
-                        Toast.makeText(context, "bor ${dataStore.REGION}", Toast.LENGTH_SHORT).show()
-                    }else{
+                    val dataStore = DataStore
+                    val context = LocalContext.current
+                    if (dataStore.REGION.equals("")) {
+                        Toast.makeText(context, "bor ${dataStore.REGION}", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
                         Toast.makeText(context, "yuq", Toast.LENGTH_SHORT).show()
                     }
 
@@ -136,8 +142,11 @@ class MainActivity : ComponentActivity() {
                     var screenName by rememberSaveable {
                         mutableStateOf("Asosiy")
                     }
-                    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
+                    val scrollBehavior =
+                        TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+                    var isSheetOpen  by rememberSaveable {
+                        mutableStateOf(false)
+                    }
                     Scaffold(modifier = Modifier
                         .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -156,7 +165,10 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 navigationIcon = {
-                                    IconButton(onClick = {
+
+                                    IconButton(
+                                        onClick = {
+                                            isSheetOpen = !isSheetOpen
                                     }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_location),
@@ -166,15 +178,15 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 actions = {
-                                          IconButton(onClick = {
+                                    IconButton(onClick = {
 
-                                          }) {
-                                              Icon(
-                                                  painter = painterResource(id = R.drawable.ic_qibla),
-                                                  contentDescription = "Qibla icon",
-                                                  Modifier.size(30.dp)
-                                              )
-                                          }
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_qibla),
+                                            contentDescription = "Qibla icon",
+                                            Modifier.size(30.dp)
+                                        )
+                                    }
                                 },
                                 scrollBehavior = scrollBehavior
                             )
@@ -230,8 +242,23 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .padding(innerPadding)
                         ) {
-
-
+                            /**
+                             * For BottomSheetDialog
+                             */
+                            val sheetState= rememberModalBottomSheetState()
+                            if (isSheetOpen){
+                                ModalBottomSheet(
+                                    sheetState=sheetState,
+                                    onDismissRequest = {
+                                        isSheetOpen=false
+                                    },
+                                    ){
+                                    SheetDialogUI()
+                                }
+                            }
+                            /**
+                             * For navigation between screens
+                             */
                             NavHost(
                                 navController = navController,
                                 startDestination = "MainScreen"
