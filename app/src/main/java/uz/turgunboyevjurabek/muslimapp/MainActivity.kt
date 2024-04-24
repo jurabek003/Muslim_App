@@ -11,7 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract.Colors
 import android.util.Log
-import android.view.WindowInsets
+
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -19,6 +19,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -249,9 +250,12 @@ class MainActivity : ComponentActivity() {
                             if (isSheetOpen){
                                 ModalBottomSheet(
                                     sheetState=sheetState,
+                                    tonalElevation = 20.dp,
                                     onDismissRequest = {
                                         isSheetOpen=false
                                     },
+
+                                    windowInsets = WindowInsets(top = 50.dp)
                                     ){
                                     SheetDialogUI()
                                 }
