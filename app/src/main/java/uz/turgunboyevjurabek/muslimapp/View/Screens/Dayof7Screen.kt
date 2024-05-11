@@ -54,6 +54,7 @@ fun Dayof7Screen(navController: NavController) {
             .fillMaxSize()
     ) {
         val weekViewModel = hiltViewModel<BirHaftalikLogika>()
+
         val context = LocalContext.current
         var weekData by remember {
             mutableStateOf(Birhaftalik())
@@ -65,11 +66,9 @@ fun Dayof7Screen(navController: NavController) {
                     Status.LOADING -> {
 
                     }
-
                     Status.ERROR -> {
                         Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                     }
-
                     Status.SUCCESS -> {
                         weekData = result.data!!
                     }

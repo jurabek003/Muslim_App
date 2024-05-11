@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof30Screen
+import uz.turgunboyevjurabek.muslimapp.View.Screens.DayOf30Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
@@ -24,7 +24,7 @@ fun Navigation():NavController {
             Dayof7Screen(navController)
         }
         composable("Dayof30Screen"){
-            Dayof30Screen()
+            DayOf30Screen()
         }
 
     }

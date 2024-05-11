@@ -1,7 +1,7 @@
 @file:OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3Api::class
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class
 )
 
 package uz.turgunboyevjurabek.muslimapp
@@ -24,13 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
+
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
@@ -78,7 +72,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import uz.turgunboyevjurabek.muslimapp.Model.cash.DataStore
 import uz.turgunboyevjurabek.muslimapp.Model.navigation.BottomNavigationItem
 import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
-import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof30Screen
+import uz.turgunboyevjurabek.muslimapp.View.Screens.DayOf30Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
@@ -90,6 +84,7 @@ import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,7 +139,7 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf("Asosiy")
                     }
                     val scrollBehavior =
-                        TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+                        TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
                     var isSheetOpen  by rememberSaveable {
                         mutableStateOf(false)
                     }
@@ -152,12 +147,11 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
-                            MediumTopAppBar(
+                            TopAppBar(
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = Color.Transparent,
                                     titleContentColor = MaterialTheme.colorScheme.primary,
                                 ),
-
                                 title = {
                                     Text(
                                         text = screenName.toString(),
@@ -166,7 +160,6 @@ class MainActivity : ComponentActivity() {
                                     )
                                 },
                                 navigationIcon = {
-
                                     IconButton(
                                         onClick = {
                                             isSheetOpen = !isSheetOpen
@@ -189,7 +182,6 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 },
-                                scrollBehavior = scrollBehavior
                             )
                         },
                         bottomBar = {
@@ -254,8 +246,6 @@ class MainActivity : ComponentActivity() {
                                     onDismissRequest = {
                                         isSheetOpen=false
                                     },
-
-                                    windowInsets = WindowInsets(top = 50.dp)
                                     ){
                                     SheetDialogUI()
                                 }
@@ -277,7 +267,7 @@ class MainActivity : ComponentActivity() {
                                     Dayof7Screen(navController = navController)
                                 }
                                 composable("Dayof30Screen") {
-                                    Dayof30Screen()
+                                    DayOf30Screen()
                                 }
 
                             }

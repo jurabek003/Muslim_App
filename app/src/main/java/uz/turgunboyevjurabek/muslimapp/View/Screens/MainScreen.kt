@@ -65,6 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.rotationMatrix
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
@@ -80,6 +81,7 @@ import uz.turgunboyevjurabek.muslimapp.Model.madels.bugungilik.Bugungi
 import uz.turgunboyevjurabek.muslimapp.Model.madels.timeConverter.DateConverter
 import uz.turgunboyevjurabek.muslimapp.Model.network.ApiService
 import uz.turgunboyevjurabek.muslimapp.Model.repozitory.MyRepozitor
+import uz.turgunboyevjurabek.muslimapp.Model.utils.DateUtil
 import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
@@ -90,7 +92,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Date
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat", "RememberReturnType")
 @Composable
 fun MainScreen(navController: NavController) {
 
@@ -98,13 +100,13 @@ fun MainScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-
         val todayViewModel= hiltViewModel<BugungilkLogika>()
         val context = LocalContext.current
         var todayData by remember {
             mutableStateOf(Bugungi())
         }
 
+        Toast.makeText(context, "MM ${DateUtil.presentMonth}", Toast.LENGTH_SHORT).show()
         LaunchedEffect(key1 = true) {
             todayViewModel.todayApi().observeForever { result ->
                 when (result.status) {
@@ -247,7 +249,6 @@ fun MainScreen(navController: NavController) {
 
                 }
             }
-
         }
 //        val scrollableState = rememberScrollableState(consumeScrollDelta = )
         
@@ -448,12 +449,7 @@ fun MainScreen(navController: NavController) {
 
                 }
             }
-
-
         }
-
-
-
     }
 }
 @Preview(showSystemUi = true)
@@ -494,7 +490,8 @@ fun Shape() {
         .clip(MorphPolygonShape(morph, animatedProgress.value))
         .background(Color(0xFF80DEEA))
         .size(200.dp)
-        .clickable(interactionSource = interactionSource, indication = null) {}) {
+        .clickable(interactionSource = interactionSource, indication = null) {}
+    ) {
         Text("Hello", modifier = Modifier.align(Alignment.Center))
     }
 }
