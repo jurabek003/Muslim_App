@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName
 
 data class BirOylikItem(
     @SerializedName("date")
-    var date: String?,
+    var date: String?=null,
     @SerializedName("day")
-    var day: Int?,
+    var day: Int?=null,
     @SerializedName("hijri_date")
-    var hijriDate: HijriDate?,
+    var hijriDate: HijriDate?=null,
     @SerializedName("month")
-    var month: Int?,
+    var month: Int?=null,
     @SerializedName("region")
-    var region: String?,
+    var region: String?=null,
     @SerializedName("regionNumber")
-    var regionNumber: Int?,
+    var regionNumber: Int?=null,
     @SerializedName("times")
-    var times: Times?,
+    var times: Times?=null,
     @SerializedName("weekday")
-    var weekday: String?
+    var weekday: String?=null
 )

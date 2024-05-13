@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 
 data class BirhaftalikItem(
     @SerializedName("date")
-    var date: String?,
+    var date: String?=null,
     @SerializedName("hijri_date")
-    var hijriDate: HijriDate?,
+    var hijriDate: HijriDate?=null,
     @SerializedName("region")
-    var region: String?,
+    var region: String?=null,
     @SerializedName("times")
-    var times: Times?,
+    var times: Times?=null,
     @SerializedName("weekday")
-    var weekday: String?
+    var weekday: String?= null
 )

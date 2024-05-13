@@ -48,7 +48,6 @@ fun Header(
             fontSize = 15.sp,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.ExtraBold,
-            color = colorResource(id = R.color.black),
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .weight(1f)

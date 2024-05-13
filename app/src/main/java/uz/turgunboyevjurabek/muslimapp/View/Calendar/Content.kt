@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,7 @@ fun Content(
 
     ) {
     Column {
-         var index = 0
+        var index = 0
         repeat(6) {
             if (index >= dates.size) return@repeat
             Row {
@@ -43,7 +44,9 @@ fun Content(
                     ContentItem(
                         date = item,
                         onClickListener = onDateClickListener,
-                        modifier = Modifier.weight(1f).size(35.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .size(35.dp),
                         alpaText = index > item.isToday
                     )
                     index++
@@ -52,15 +55,16 @@ fun Content(
         }
     }
 }
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentItem(
     date: CalendarUiState.Date,
     onClickListener: (CalendarUiState.Date) -> Unit,
     modifier: Modifier = Modifier,
-    alpaText:Boolean
+    alpaText: Boolean,
 
-) {
+    ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
@@ -78,7 +82,9 @@ fun ContentItem(
         Text(
             text = date.dayOfMonth,
             fontSize = 16.sp,
-            color = if (date.isSelected) Color.White else Color.Black,
+            color = if (isSystemInDarkTheme()) Color.White else {
+                if (date.isSelected) Color.White else Color.Black
+            },
             style = if (date.isSelected) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodySmall,
             fontWeight = if (date.isSelected) FontWeight.Bold else FontWeight.Medium,
             modifier = Modifier

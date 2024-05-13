@@ -10,6 +10,7 @@ import uz.turgunboyevjurabek.muslimapp.Model.madels.bugungilik.Bugungi
 import uz.turgunboyevjurabek.muslimapp.Model.utils.DateUtil
 
 interface ApiService {
+
     /**
      * Bugungilik Namoz vaqtlari
      */

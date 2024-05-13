@@ -20,7 +20,6 @@ fun DayItem(day: String, modifier: Modifier = Modifier) {
         Text(
             text = day,
             style = MaterialTheme.typography.bodyMedium,
-            color = colorResource(id = R.color.black),
             fontWeight = FontWeight.Normal,
             fontSize = 13.sp,
             modifier = Modifier
