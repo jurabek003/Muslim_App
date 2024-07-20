@@ -41,8 +41,6 @@ import androidx.graphics.shapes.circle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import uz.turgunboyevjurabek.muslimapp.View.shape.MorphPolygonShape
-
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TasbexScreen(navController: NavController) {
@@ -63,25 +61,23 @@ fun TasbexScreen(navController: NavController) {
                 ShapeCount()
             }
         }
-
     }
-
 }
 
 @Composable
 fun ShapeCount() {
-    val shapeA = remember {
+    val shapeA = remember{
         RoundedPolygon(
             12,
             rounding = CornerRounding(0.2f)
         )
     }
-    val shapeB = remember {
+    val shapeB = remember{
         RoundedPolygon.circle(
             15
         )
     }
-    val morph = remember {
+    val morph = remember{
         Morph(shapeA, shapeB)
     }
     val interactionSource = remember {
