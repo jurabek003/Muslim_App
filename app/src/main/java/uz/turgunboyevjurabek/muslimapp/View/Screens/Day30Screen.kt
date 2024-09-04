@@ -74,6 +74,7 @@ fun DayOf30Screen() {
             viewModel.getMontData().observeForever {
                 when (it.status) {
                     LOADING -> {
+
                     }
                     ERROR -> {
                         Toast.makeText(context, "${it.message}", Toast.LENGTH_SHORT).show()
