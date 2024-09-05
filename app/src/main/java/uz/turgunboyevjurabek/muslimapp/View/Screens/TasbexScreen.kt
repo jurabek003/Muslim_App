@@ -1,6 +1,8 @@
 package uz.turgunboyevjurabek.muslimapp.View.Screens
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
@@ -29,10 +31,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,10 +52,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,6 +69,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
@@ -73,75 +87,102 @@ import uz.turgunboyevjurabek.muslimapp.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.ViewModel.DataStorePreferencesViewModel.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
 
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TasbexScreen(navController: NavController,viewModel: CounterViewModel) {
+fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
     val counterViewModel by viewModel.counter.collectAsState()
-    Column(
-        modifier = Modifier.fillMaxSize()
+    val context = LocalContext.current
+    val constraintSet = ConstraintSet {
+        createRefFor("AnimatedText")
+        createRefFor("MessageText")
+        createRefFor("RowIcons")
+        createRefFor("ShapeCount")
+    }
+
+    var count by rememberSaveable {
+        mutableIntStateOf(counterViewModel)
+    }
+    ConstraintLayout(
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Scaffold(
+        val (animatedText, messageText,columnItems, shapeCount) = createRefs()
+        AnimatedCounter(
             modifier = Modifier
-                .fillMaxSize()
-        ) {
-            var count by rememberSaveable {
-                mutableIntStateOf(counterViewModel)
-            }
-
-
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                AnimatedCounter(
-                    count = count,
-                    style = TextStyle(
-                        fontFamily = FontFamily.Serif,
-                        fontSize = 55.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                )
-
-                Column(
-                    modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()
-                ) {
-                    Spacer(modifier = Modifier.padding(5.dp))
-
-                    /**
-                     * Agar showText true bo'lsa, matnni animatsiya bilan ko'rsatamiz
-                     */
-                   MessageText(viewModel = viewModel)
-                    Row(
-                        modifier = Modifier
-                            .background(Color.Red)
-                            .wrapContentHeight()
-                            .fillMaxWidth()
-                    ) {
-
-                    }
-
+                .constrainAs(animatedText) {
+                    top.linkTo(parent.top, margin=50.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            count = count, style = TextStyle(
+                fontFamily = FontFamily.Serif, fontSize = 55.sp, fontWeight = FontWeight.ExtraBold
+            )
+        )
+        MessageText(
+            viewModel = viewModel,
+            modifier = Modifier
+                .constrainAs(messageText){
+                    top.linkTo(animatedText.bottom)
+                    start.linkTo(animatedText.start)
+                    end.linkTo(animatedText.end)
                 }
-                ShapeCount(
-                    onClick = {
-                        count++
-                        viewModel.incrementCounter()
-                    },
-                    count = count,
-                )
-                Spacer(modifier = Modifier.height(30.dp))
+        )
+        Column(
+            modifier = Modifier
+                .height(200.dp)
+                .fillMaxWidth()
+                .constrainAs(columnItems){
+                    top.linkTo(animatedText.bottom, margin = 50.dp)
+                }
+        ) {
+            Row(
+                modifier = Modifier
+                    .height(170.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = {
+                    Toast.makeText(context, "Story icon clicked", Toast.LENGTH_SHORT).show()
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_story),
+                        contentDescription = "story icon"
+                    )
+                }
+                Spacer(modifier = Modifier.width(50.dp))
+
+                IconButton(onClick = {
+                    Toast.makeText(context, "Restart icon clicked", Toast.LENGTH_SHORT).show()
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_restart),
+                        contentDescription = "restart icon"
+                    )
+                }
+
             }
+
         }
+        ShapeCount(
+            onClick = {
+                count++
+                viewModel.incrementCounter()
+            },
+            count = count,
+            modifier = Modifier
+                .constrainAs(shapeCount){
+                    bottom.linkTo(parent.bottom, margin = 30.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+        )
     }
 }
 
 @Composable
-fun MessageText(viewModel: CounterViewModel) {
-    val counterViewModel=viewModel.counter.collectAsState()
+fun MessageText(viewModel: CounterViewModel,modifier: Modifier) {
+    val counterViewModel = viewModel.counter.collectAsState()
     // Ushbu holat matnni boshqaradi
     var showText by remember { mutableStateOf(true) }
 
@@ -150,13 +191,12 @@ fun MessageText(viewModel: CounterViewModel) {
         delay(8000L) // 8 soniya kutish
         showText = false
     }
-
     AnimatedVisibility(
+        modifier = modifier,
         visible = showText, // showText true bo'lsa matn ko'rsatilad
         enter = fadeIn(animationSpec = tween(durationMillis = 1000)), // 1 soniyada paydo bo'lish animatsiyasi
         exit = slideOutHorizontally(
-            targetOffsetX = { fullWidth -> fullWidth },
-            animationSpec = tween(durationMillis = 3000)
+            targetOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(durationMillis = 3000)
         )
     ) {
         Text(
@@ -164,7 +204,7 @@ fun MessageText(viewModel: CounterViewModel) {
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
             fontFamily = FontFamily.Serif,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .coloredShadow(
                     Color.Red,
@@ -173,41 +213,42 @@ fun MessageText(viewModel: CounterViewModel) {
                 )
         )
     }
+
 }
 
 @Composable
 fun ShapeCount(
-    onClick:()->Unit,
-    count:Int
+    onClick: () -> Unit, count: Int,
+    modifier: Modifier
 ) {
+
     var alphaForShadow by rememberSaveable {
         mutableFloatStateOf(0.01f)
     }
-     when(count){
-        in  0 .. 9  -> alphaForShadow=0.01f
-        in 10 .. 19 -> alphaForShadow=0.05f
-        in 20 .. 29 ->alphaForShadow= 0.1f
-        in 30 .. 39 -> alphaForShadow=0.15f
-        in 40 .. 49 ->alphaForShadow= 0.2f
-        in 50 .. 59 -> alphaForShadow=0.25f
-        in 60 .. 69 ->alphaForShadow= 0.3f
-        in 70 .. 79 -> alphaForShadow=0.35f
-        in 80 .. 89 ->alphaForShadow= 0.4f
-        in 90 .. 99 -> alphaForShadow=0.45f
+    when (count) {
+        in 0..9 -> alphaForShadow = 0.01f
+        in 10..19 -> alphaForShadow = 0.05f
+        in 20..29 -> alphaForShadow = 0.1f
+        in 30..39 -> alphaForShadow = 0.15f
+        in 40..49 -> alphaForShadow = 0.2f
+        in 50..59 -> alphaForShadow = 0.25f
+        in 60..69 -> alphaForShadow = 0.3f
+        in 70..79 -> alphaForShadow = 0.35f
+        in 80..89 -> alphaForShadow = 0.4f
+        in 90..99 -> alphaForShadow = 0.45f
         else -> 0.5f
     }
-    val shapeA = remember{
+    val shapeA = remember {
         RoundedPolygon(
-            12,
-            rounding = CornerRounding(0.2f)
+            12, rounding = CornerRounding(0.2f)
         )
     }
-    val shapeB = remember{
+    val shapeB = remember {
         RoundedPolygon.circle(
             15
         )
     }
-    val morph = remember{
+    val morph = remember {
         Morph(shapeA, shapeB)
     }
     val interactionSource = remember {
@@ -220,7 +261,7 @@ fun ShapeCount(
         animationSpec = spring(dampingRatio = 0.4f, stiffness = Spring.StiffnessMedium)
     )
     Card(
-        modifier = Modifier
+        modifier = modifier
             .coloredShadow(
                 Color.Yellow,
                 borderRadius = 150.dp,
@@ -238,8 +279,7 @@ fun ShapeCount(
             },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -250,15 +290,16 @@ fun ShapeCount(
                 fontWeight = FontWeight.ExtraBold
             )
         }
-    }
 
+    }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun TasbexUI() {
     val navController = rememberNavController()
-//    TasbexScreen(navController = navController)
+//    val dataStore=(LocalContext.current as MyAplication).dataStore
+//    TasbexScreen(navController = navController, CounterViewModel(dataStore = DataStore<Preferences>()))
 }
 /**
  * For color anim code
