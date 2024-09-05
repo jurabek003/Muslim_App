@@ -18,7 +18,7 @@ fun Navigation():NavController {
             MainScreen(navController=navController)
         }
         composable("TasbexScreen"){
-            TasbexScreen(navController = navController)
+//            TasbexScreen(navController = navController)
         }
         composable("Dayof7Screen"){
             Dayof7Screen(navController)

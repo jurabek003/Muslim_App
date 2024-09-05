@@ -69,7 +69,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import uz.turgunboyevjurabek.muslimapp.Model.cash.DataStore
 import uz.turgunboyevjurabek.muslimapp.Model.navigation.BottomNavigationItem
 import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
 import uz.turgunboyevjurabek.muslimapp.View.Screens.DayOf30Screen
@@ -79,6 +78,7 @@ import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
 import uz.turgunboyevjurabek.muslimapp.View.UIutils.SheetDialogUI
 import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
 import uz.turgunboyevjurabek.muslimapp.ViewModel.Bugungilik.BugungilkLogika
+import uz.turgunboyevjurabek.muslimapp.ViewModel.DataStorePreferencesViewModel.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
 
 
@@ -88,8 +88,10 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dataStore = (application as MyAplication).dataStore
         enableEdgeToEdge()
         setContent {
+            val viewModel=CounterViewModel(dataStore)
             MuslimAppTheme {
                 val items = listOf(
                     BottomNavigationItem(
@@ -125,15 +127,6 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    val dataStore = DataStore
-                    val context = LocalContext.current
-                    if (dataStore.REGION.equals("")) {
-                        Toast.makeText(context, "bor ${dataStore.REGION}", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        Toast.makeText(context, "yuq", Toast.LENGTH_SHORT).show()
-                    }
-
                     val navController = rememberNavController()
                     var screenName by rememberSaveable {
                         mutableStateOf("Asosiy")
@@ -143,11 +136,13 @@ class MainActivity : ComponentActivity() {
                     var isSheetOpen  by rememberSaveable {
                         mutableStateOf(false)
                     }
+
                     Scaffold(modifier = Modifier
                         .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
                             TopAppBar(
+                                scrollBehavior = scrollBehavior,
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = Color.Transparent,
                                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -250,6 +245,7 @@ class MainActivity : ComponentActivity() {
                                     SheetDialogUI()
                                 }
                             }
+
                             /**
                              * For navigation between screens
                              */
@@ -261,7 +257,10 @@ class MainActivity : ComponentActivity() {
                                     MainScreen(navController = navController)
                                 }
                                 composable("TasbexScreen") {
-                                    TasbexScreen(navController = navController)
+                                    TasbexScreen(
+                                        navController = navController,
+                                        viewModel = viewModel
+                                    )
                                 }
                                 composable("Dayof7Screen") {
                                     Dayof7Screen(navController = navController)

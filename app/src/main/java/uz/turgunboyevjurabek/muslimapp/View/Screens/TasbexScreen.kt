@@ -1,6 +1,7 @@
 package uz.turgunboyevjurabek.muslimapp.View.Screens
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
@@ -9,6 +10,10 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,11 +22,14 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -29,6 +37,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,6 +55,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,14 +65,18 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
+import uz.turgunboyevjurabek.muslimapp.MyAplication
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.View.UIutils.AnimatedCounter
 import uz.turgunboyevjurabek.muslimapp.View.shape.MorphPolygonShape
+import uz.turgunboyevjurabek.muslimapp.ViewModel.DataStorePreferencesViewModel.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TasbexScreen(navController: NavController) {
+fun TasbexScreen(navController: NavController,viewModel: CounterViewModel) {
+    val counterViewModel by viewModel.counter.collectAsState()
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -70,8 +85,9 @@ fun TasbexScreen(navController: NavController) {
                 .fillMaxSize()
         ) {
             var count by rememberSaveable {
-                mutableIntStateOf(0)
+                mutableIntStateOf(counterViewModel)
             }
+
 
             Column(
                 modifier = Modifier
@@ -88,16 +104,74 @@ fun TasbexScreen(navController: NavController) {
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
-                Spacer(modifier = Modifier.height(200.dp))
+
+                Column(
+                    modifier = Modifier
+                        .height(200.dp)
+                        .fillMaxWidth()
+                ) {
+                    Spacer(modifier = Modifier.padding(5.dp))
+
+                    /**
+                     * Agar showText true bo'lsa, matnni animatsiya bilan ko'rsatamiz
+                     */
+                   MessageText(viewModel = viewModel)
+                    Row(
+                        modifier = Modifier
+                            .background(Color.Red)
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                    ) {
+
+                    }
+
+                }
                 ShapeCount(
                     onClick = {
                         count++
+                        viewModel.incrementCounter()
                     },
-                    count = count ,
+                    count = count,
                 )
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
+    }
+}
+
+@Composable
+fun MessageText(viewModel: CounterViewModel) {
+    val counterViewModel=viewModel.counter.collectAsState()
+    // Ushbu holat matnni boshqaradi
+    var showText by remember { mutableStateOf(true) }
+
+    // LaunchedEffect bilan 8 soniyadan keyin matnni yo'q qilamiz
+    LaunchedEffect(Unit) {
+        delay(8000L) // 8 soniya kutish
+        showText = false
+    }
+
+    AnimatedVisibility(
+        visible = showText, // showText true bo'lsa matn ko'rsatilad
+        enter = fadeIn(animationSpec = tween(durationMillis = 1000)), // 1 soniyada paydo bo'lish animatsiyasi
+        exit = slideOutHorizontally(
+            targetOffsetX = { fullWidth -> fullWidth },
+            animationSpec = tween(durationMillis = 3000)
+        )
+    ) {
+        Text(
+            text = if (counterViewModel.value == 0) "Yangi zikr" else "Avvalgi zikrni davom ettiring",
+            fontSize = 15.sp,
+            textAlign = TextAlign.Center,
+            fontFamily = FontFamily.Serif,
+            modifier = Modifier
+                .fillMaxWidth()
+                .coloredShadow(
+                    Color.Red,
+                    borderRadius = 20.dp,
+                    shadowRadius = 30.dp,
+                )
+        )
     }
 }
 
@@ -184,7 +258,7 @@ fun ShapeCount(
 @Composable
 fun TasbexUI() {
     val navController = rememberNavController()
-    TasbexScreen(navController = navController)
+//    TasbexScreen(navController = navController)
 }
 /**
  * For color anim code
