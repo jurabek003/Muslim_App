@@ -41,6 +41,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -80,6 +82,7 @@ import androidx.graphics.shapes.circle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
+import uz.turgunboyevjurabek.muslimapp.Model.madels.zikr.Tasbeh
 import uz.turgunboyevjurabek.muslimapp.MyAplication
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.View.UIutils.AnimatedCounter
@@ -93,13 +96,18 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
 fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
     val counterViewModel by viewModel.counter.collectAsState()
     val context = LocalContext.current
-    val constraintSet = ConstraintSet {
-        createRefFor("AnimatedText")
-        createRefFor("MessageText")
-        createRefFor("RowIcons")
-        createRefFor("ShapeCount")
-    }
-
+    val zikrList=ArrayList<Tasbeh>()
+    zikrList.addAll(
+        listOf(
+            Tasbeh("Subhanalloh"),
+            Tasbeh("Alhamdulillah"),
+            Tasbeh("Allohu Akbar"),
+            Tasbeh("Astag‘firullah"),
+            Tasbeh("Subhanallohi, Val hamdu lillahi, Va laa ilaha illallohu va Allohu Akbar"),
+            Tasbeh("Subhanallohi va bihamdihi, Subhanallohil azim"),
+            Tasbeh("Astag‘firullaha robbii min kulli zanbi va atuubu ilayhi")
+        )
+    )
     var count by rememberSaveable {
         mutableIntStateOf(counterViewModel)
     }
@@ -107,6 +115,7 @@ fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
         modifier = Modifier.fillMaxSize(),
     ) {
         val (animatedText, messageText,columnItems, shapeCount) = createRefs()
+
         AnimatedCounter(
             modifier = Modifier
                 .constrainAs(animatedText) {
@@ -129,35 +138,39 @@ fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
         )
         Column(
             modifier = Modifier
-                .height(200.dp)
                 .fillMaxWidth()
-                .constrainAs(columnItems){
-                    top.linkTo(animatedText.bottom, margin = 50.dp)
+                .constrainAs(columnItems) {
+                    bottom.linkTo(shapeCount.top, margin = 30.dp)
+                    start.linkTo(shapeCount.start)
+                    end.linkTo(shapeCount.end)
                 }
         ) {
             Row(
                 modifier = Modifier
-                    .height(170.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = {
                     Toast.makeText(context, "Story icon clicked", Toast.LENGTH_SHORT).show()
                 }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_story),
-                        contentDescription = "story icon"
+                        painter = painterResource(id = R.drawable.ic_story2),
+                        contentDescription = "story icon",
+                        modifier = Modifier
+                            .size(40.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(50.dp))
-
                 IconButton(onClick = {
-                    Toast.makeText(context, "Restart icon clicked", Toast.LENGTH_SHORT).show()
+                    count=0
+                    viewModel.clearCounter()
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_restart),
-                        contentDescription = "restart icon"
+                        contentDescription = "restart icon",
+                        modifier = Modifier
+                            .size(40.dp)
                     )
                 }
 
@@ -183,7 +196,7 @@ fun TasbexScreen(navController: NavController, viewModel: CounterViewModel) {
 @Composable
 fun MessageText(viewModel: CounterViewModel,modifier: Modifier) {
     val counterViewModel = viewModel.counter.collectAsState()
-    // Ushbu holat matnni boshqaradi
+
     var showText by remember { mutableStateOf(true) }
 
     // LaunchedEffect bilan 8 soniyadan keyin matnni yo'q qilamiz
@@ -193,8 +206,10 @@ fun MessageText(viewModel: CounterViewModel,modifier: Modifier) {
     }
     AnimatedVisibility(
         modifier = modifier,
-        visible = showText, // showText true bo'lsa matn ko'rsatilad
-        enter = fadeIn(animationSpec = tween(durationMillis = 1000)), // 1 soniyada paydo bo'lish animatsiyasi
+        visible = showText, // showText true bo'lsa matn ko'rsatiladi
+        enter = slideInHorizontally(
+            initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(durationMillis = 3000)
+        ),
         exit = slideOutHorizontally(
             targetOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(durationMillis = 3000)
         )
@@ -225,17 +240,17 @@ fun ShapeCount(
     var alphaForShadow by rememberSaveable {
         mutableFloatStateOf(0.01f)
     }
-    when (count) {
-        in 0..9 -> alphaForShadow = 0.01f
-        in 10..19 -> alphaForShadow = 0.05f
-        in 20..29 -> alphaForShadow = 0.1f
-        in 30..39 -> alphaForShadow = 0.15f
-        in 40..49 -> alphaForShadow = 0.2f
-        in 50..59 -> alphaForShadow = 0.25f
-        in 60..69 -> alphaForShadow = 0.3f
-        in 70..79 -> alphaForShadow = 0.35f
-        in 80..89 -> alphaForShadow = 0.4f
-        in 90..99 -> alphaForShadow = 0.45f
+    alphaForShadow = when (count) {
+        in 0..9 -> 0.01f
+        in 10..19 -> 0.05f
+        in 20..29 -> 0.1f
+        in 30..39 -> 0.15f
+        in 40..49 -> 0.2f
+        in 50..59 -> 0.25f
+        in 60..69 -> 0.3f
+        in 70..79 -> 0.35f
+        in 80..89 -> 0.4f
+        in 90..99 -> 0.45f
         else -> 0.5f
     }
     val shapeA = remember {
@@ -277,6 +292,9 @@ fun ShapeCount(
             .clickable(interactionSource = interactionSource, indication = null) {
                 onClick()
             },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(10.dp)
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

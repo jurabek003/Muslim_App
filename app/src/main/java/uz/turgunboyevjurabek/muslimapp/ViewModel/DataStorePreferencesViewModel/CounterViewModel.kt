@@ -39,11 +39,19 @@ class CounterViewModel(private val dataStore: DataStore<Preferences>) : ViewMode
             saveCounter(newCount)
         }
     }
-
     // Hisoblagich qiymatini saqlash
     private suspend fun saveCounter(count: Int) {
         dataStore.edit { preferences ->
             preferences[COUNTER_KEY] = count
+        }
+    }
+    // Hisoblagichini tozalash
+    fun clearCounter(){
+        viewModelScope.launch {
+            dataStore.edit { mutablePreferences ->
+                mutablePreferences.clear()
+            }
+            counter.value=0
         }
     }
 }
