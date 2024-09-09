@@ -7,89 +7,96 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
 import android.util.Log
 
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uz.turgunboyevjurabek.muslimapp.Model.navigation.BottomNavigationItem
-import uz.turgunboyevjurabek.muslimapp.Model.utils.Status
+import uz.turgunboyevjurabek.muslimapp.Model.utils.calculateQiblaDirection
 import uz.turgunboyevjurabek.muslimapp.View.Screens.DayOf30Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof7Screen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.MainScreen
+import uz.turgunboyevjurabek.muslimapp.View.Screens.QiblaScreen
 import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
 import uz.turgunboyevjurabek.muslimapp.View.UIutils.SheetDialogUI
-import uz.turgunboyevjurabek.muslimapp.View.navigation.Navigation
-import uz.turgunboyevjurabek.muslimapp.ViewModel.Bugungilik.BugungilkLogika
 import uz.turgunboyevjurabek.muslimapp.ViewModel.DataStorePreferencesViewModel.CounterViewModel
+import uz.turgunboyevjurabek.muslimapp.ViewModel.Qibla.MainViewModel
 import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
-
+import uz.turgunboyevjurabek.qiblafinderexample.service.CompassSensorManager
+import uz.turgunboyevjurabek.qiblafinderexample.service.MyLocationManager
+import uz.turgunboyevjurabek.muslimapp.Model.service.PermissionsManager
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var myLocationManager: MyLocationManager
+
+    @Inject
+    lateinit var compassSensorManager: CompassSensorManager
+
+    private lateinit var permissionsManager: PermissionsManager
+    private val mainViewModel by viewModels<MainViewModel>()
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val dataStore = (application as MyAplication).dataStore
         enableEdgeToEdge()
+        permissionsManager = PermissionsManager(this)
+        permissionsManager.onPermissionGranted = {
+            myLocationManager.getLastKnownLocation()
+        }
+        permissionsManager.checkAndRequestLocationPermission()
+        myLocationManager.onLocationReceived = { location ->
+            val qiblaDirection = calculateQiblaDirection(location.latitude, location.longitude).toFloat()
+            mainViewModel.updateQiblaDirection(qiblaDirection)
+        }
+        compassSensorManager.onDirectionChanged = { direction ->
+            mainViewModel.updateCurrentDirection(direction)
+        }
         setContent {
             val viewModel=CounterViewModel(dataStore)
             MuslimAppTheme {
@@ -125,24 +132,26 @@ class MainActivity : ComponentActivity() {
                 )
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val state = mainViewModel.qiblaState.collectAsState()
+
                     var screenName by rememberSaveable {
                         mutableStateOf("Asosiy")
                     }
-                    val scrollBehavior =
-                        TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+                    val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
                     var isSheetOpen  by rememberSaveable {
                         mutableStateOf(false)
                     }
 
-                    Scaffold(modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    Scaffold(
                         topBar = {
                             TopAppBar(
-                                scrollBehavior = scrollBehavior,
+                                scrollBehavior = topAppBarScrollBehavior,
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = Color.Transparent,
                                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -158,7 +167,7 @@ class MainActivity : ComponentActivity() {
                                     IconButton(
                                         onClick = {
                                             isSheetOpen = !isSheetOpen
-                                    }) {
+                                        }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_location),
                                             contentDescription = "Location Region",
@@ -168,7 +177,7 @@ class MainActivity : ComponentActivity() {
                                 },
                                 actions = {
                                     IconButton(onClick = {
-
+                                        navController.navigate("QiblaScreen")
                                     }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_qibla),
@@ -179,6 +188,8 @@ class MainActivity : ComponentActivity() {
                                 },
                             )
                         },
+                        modifier = Modifier
+                        .fillMaxSize(),
                         bottomBar = {
                             var selectedTabIndex by rememberSaveable {
                                 mutableStateOf(0)
@@ -267,6 +278,12 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable("Dayof30Screen") {
                                     DayOf30Screen()
+                                }
+                                composable("QiblaScreen") {
+                                    QiblaScreen(
+                                        qiblaDirection = state.value.qiblaDirection,
+                                        currentDirection = state.value.currentDirection
+                                    )
                                 }
 
                             }
