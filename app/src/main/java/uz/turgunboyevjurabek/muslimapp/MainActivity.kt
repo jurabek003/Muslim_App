@@ -65,6 +65,8 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.qiblafinderexample.service.CompassSensorManager
 import uz.turgunboyevjurabek.qiblafinderexample.service.MyLocationManager
 import uz.turgunboyevjurabek.muslimapp.feature.domein.service.PermissionsManager
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.MyTopBar
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.myBottomNavigationBar
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -101,36 +103,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel= CounterViewModel(dataStore)
             MuslimAppTheme {
-                val items = listOf(
-                    BottomNavigationItem(
-                        title = "Asosiy",
-                        selectedIcon = painterResource(id = R.drawable.home_selected),
-                        unselectedIcon = painterResource(id = R.drawable.home_unselected),
-                        screenRout = "MainScreen",
-                        badgeCount = 0
-                    ),
-                    BottomNavigationItem(
-                        title = "Tasbex",
-                        selectedIcon = painterResource(id = R.drawable.tasbeh_select),
-                        unselectedIcon = painterResource(id = R.drawable.tasbeh_unselect),
-                        screenRout = "TasbexScreen",
-                        badgeCount = 0
-                    ),
-                    BottomNavigationItem(
-                        title = "7 Kunlik",
-                        selectedIcon = painterResource(id = R.drawable.i7days_select),
-                        unselectedIcon = painterResource(id = R.drawable.i7days_unselect),
-                        screenRout = "Dayof7Screen",
-                        badgeCount = 0
-                    ),
-                    BottomNavigationItem(
-                        title = "30 Kunlik",
-                        selectedIcon = painterResource(id = R.drawable.i30days_select),
-                        unselectedIcon = painterResource(id = R.drawable.i30days_unselect),
-                        screenRout = "Dayof30Screen",
-                        badgeCount = 0
-                    ),
-                )
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -142,96 +115,25 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf("Asosiy")
                     }
 
-                    val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
                     var isSheetOpen  by rememberSaveable {
                         mutableStateOf(false)
                     }
                     Scaffold(
+                        modifier = Modifier
+                            .fillMaxSize(),
                         topBar = {
-                            TopAppBar(
-                                scrollBehavior = topAppBarScrollBehavior,
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = Color.Transparent,
-                                    titleContentColor = MaterialTheme.colorScheme.primary,
-                                ),
-                                title = {
-                                    Text(
-                                        text = screenName.toString(),
-                                        fontWeight = FontWeight.ExtraBold,
-                                        fontFamily = FontFamily.Serif
-                                    )
-                                },
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            isSheetOpen = !isSheetOpen
-                                        }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_location),
-                                            contentDescription = "Location Region",
-                                            Modifier.size(25.dp)
-                                        )
-                                    }
-                                },
-                                actions = {
-                                    IconButton(onClick = {
-                                        navController.navigate("QiblaScreen")
-                                    }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_qibla),
-                                            contentDescription = "Qibla icon",
-                                            Modifier.size(30.dp)
-                                        )
-                                    }
-                                },
+                            MyTopBar(
+                                navController = navController,
+                                screenName = screenName,
+                                onSheetClick = {
+                                    isSheetOpen = !isSheetOpen
+                                }
                             )
                         },
-                        modifier = Modifier
-                        .fillMaxSize(),
                         bottomBar = {
-                            var selectedTabIndex by rememberSaveable {
-                                mutableStateOf(0)
-                            }
-                            NavigationBar {
-                                items.forEachIndexed { index, bottomNavigationItem ->
-                                    NavigationBarItem(
-                                        selected = selectedTabIndex == index,
-                                        onClick = {
-                                            selectedTabIndex = index
-                                            navController.popBackStack()
-                                            navController.navigate(bottomNavigationItem.screenRout)
-                                            screenName = bottomNavigationItem.title
-                                        },
-                                        alwaysShowLabel = false,
-                                        label = {
-                                            Text(
-                                                text = bottomNavigationItem.title,
-                                                fontWeight = FontWeight.ExtraBold
-                                            )
-                                        },
-                                        icon = {
-                                            BadgedBox(badge = {
-                                                if (bottomNavigationItem.badgeCount != 0) {
-                                                    Badge(content = {
-                                                        Text(text = bottomNavigationItem.badgeCount.toString())
-                                                    })
-                                                }
-                                            }) {
-                                                Icon(
-                                                    painter = if (selectedTabIndex == index) {
-                                                        bottomNavigationItem.selectedIcon
-                                                    } else {
-                                                        bottomNavigationItem.unselectedIcon
-                                                    },
-                                                    contentDescription = bottomNavigationItem.title,
-                                                    modifier = Modifier.size(25.dp)
-                                                )
-                                            }
-                                        }
-                                    )
-                                }
-                            }
+                            screenName = myBottomNavigationBar(
+                                navController = navController,
+                            )
                         }
                     ) { innerPadding ->
                         Column(
