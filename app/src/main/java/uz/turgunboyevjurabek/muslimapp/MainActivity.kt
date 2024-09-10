@@ -7,10 +7,8 @@
 package uz.turgunboyevjurabek.muslimapp
 
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,20 +50,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import uz.turgunboyevjurabek.muslimapp.Model.navigation.BottomNavigationItem
-import uz.turgunboyevjurabek.muslimapp.Model.utils.calculateQiblaDirection
-import uz.turgunboyevjurabek.muslimapp.View.Screens.DayOf30Screen
-import uz.turgunboyevjurabek.muslimapp.View.Screens.Dayof7Screen
-import uz.turgunboyevjurabek.muslimapp.View.Screens.MainScreen
-import uz.turgunboyevjurabek.muslimapp.View.Screens.QiblaScreen
-import uz.turgunboyevjurabek.muslimapp.View.Screens.TasbexScreen
-import uz.turgunboyevjurabek.muslimapp.View.UIutils.SheetDialogUI
-import uz.turgunboyevjurabek.muslimapp.ViewModel.DataStorePreferencesViewModel.CounterViewModel
-import uz.turgunboyevjurabek.muslimapp.ViewModel.Qibla.MainViewModel
-import uz.turgunboyevjurabek.muslimapp.ui.theme.MuslimAppTheme
+import uz.turgunboyevjurabek.muslimapp.core.MyAplication
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.navigation.BottomNavigationItem
+import uz.turgunboyevjurabek.muslimapp.core.utils.calculateQiblaDirection
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.DayOf30Screen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.Dayof7Screen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.MainScreen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.QiblaScreen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.TasbexScreen
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.SheetDialogUI
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.DataStorePreferencesViewModel.CounterViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Qibla.MainViewModel
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
 import uz.turgunboyevjurabek.qiblafinderexample.service.CompassSensorManager
 import uz.turgunboyevjurabek.qiblafinderexample.service.MyLocationManager
-import uz.turgunboyevjurabek.muslimapp.Model.service.PermissionsManager
+import uz.turgunboyevjurabek.muslimapp.feature.domein.service.PermissionsManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -100,7 +99,7 @@ class MainActivity : ComponentActivity() {
         compassSensorManager.registerListeners()
 
         setContent {
-            val viewModel=CounterViewModel(dataStore)
+            val viewModel= CounterViewModel(dataStore)
             MuslimAppTheme {
                 val items = listOf(
                     BottomNavigationItem(
@@ -230,9 +229,7 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         }
-
                                     )
-
                                 }
                             }
                         }
@@ -256,7 +253,6 @@ class MainActivity : ComponentActivity() {
                                     SheetDialogUI()
                                 }
                             }
-
                             /**
                              * For navigation between screens
                              */
