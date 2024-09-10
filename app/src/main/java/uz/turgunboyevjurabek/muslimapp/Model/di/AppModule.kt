@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import uz.turgunboyevjurabek.qiblafinderexample.service.CompassSensorManager
 import javax.inject.Singleton
 
 
@@ -35,5 +36,12 @@ object AppModule {
     fun provideSensorManager(@ApplicationContext context: Context): SensorManager {
         return context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     }
+
+//    @Singleton
+//    @Provides
+//    fun provideCompassSensorManager(sensorManager: SensorManager): CompassSensorManager {
+//        return CompassSensorManager(sensorManager)
+//    }
+
 
 }

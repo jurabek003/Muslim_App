@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import uz.turgunboyevjurabek.muslimapp.Model.utils.drawableToBitmap
 import uz.turgunboyevjurabek.muslimapp.Model.utils.vibrateDevice
 import uz.turgunboyevjurabek.muslimapp.R
@@ -38,7 +39,9 @@ fun QiblaScreen(
     modifier: Modifier = Modifier,
     qiblaDirection: Float,
     currentDirection: Float,
+    navController: NavController
 ) {
+
     val context = LocalContext.current
 
     val compassBgBitmap = remember { drawableToBitmap(context, R.drawable.compass3).asImageBitmap() }
@@ -52,10 +55,7 @@ fun QiblaScreen(
     val directionDifference = qiblaDirection - currentDirection
     val normalizedDifference = (directionDifference + 360) % 360
 
-    val isFacingQibla = (
-            (normalizedDifference in 0.0..maxTolerance.toDouble()) ||
-                    (normalizedDifference >= 360 - minTolerance && normalizedDifference <= 360)
-            )
+    val isFacingQibla = ((normalizedDifference in 0.0..maxTolerance.toDouble()) || (normalizedDifference >= 360 - minTolerance && normalizedDifference <= 360))
 
     var hasVibrated by remember { mutableStateOf(false) }
 
@@ -66,14 +66,6 @@ fun QiblaScreen(
     } else if (!isFacingQibla) {
         hasVibrated = false // Reset when not facing Qibla
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(30.dp)
-            .statusBarsPadding(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
-    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -149,4 +141,3 @@ fun QiblaScreen(
             }
         }
     }
-}

@@ -77,13 +77,13 @@ class MainActivity : ComponentActivity() {
     lateinit var compassSensorManager: CompassSensorManager
 
     private lateinit var permissionsManager: PermissionsManager
-    private val mainViewModel by viewModels<MainViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val dataStore = (application as MyAplication).dataStore
+        val mainViewModel by viewModels<MainViewModel>()
         enableEdgeToEdge()
         permissionsManager = PermissionsManager(this)
         permissionsManager.onPermissionGranted = {
@@ -97,6 +97,8 @@ class MainActivity : ComponentActivity() {
         compassSensorManager.onDirectionChanged = { direction ->
             mainViewModel.updateCurrentDirection(direction)
         }
+        compassSensorManager.registerListeners()
+
         setContent {
             val viewModel=CounterViewModel(dataStore)
             MuslimAppTheme {
@@ -130,11 +132,10 @@ class MainActivity : ComponentActivity() {
                         badgeCount = 0
                     ),
                 )
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
+                ){
                     val navController = rememberNavController()
                     val state = mainViewModel.qiblaState.collectAsState()
 
@@ -147,7 +148,6 @@ class MainActivity : ComponentActivity() {
                     var isSheetOpen  by rememberSaveable {
                         mutableStateOf(false)
                     }
-
                     Scaffold(
                         topBar = {
                             TopAppBar(
@@ -282,9 +282,11 @@ class MainActivity : ComponentActivity() {
                                 composable("QiblaScreen") {
                                     QiblaScreen(
                                         qiblaDirection = state.value.qiblaDirection,
-                                        currentDirection = state.value.currentDirection
+                                        currentDirection = state.value.currentDirection,
+                                        navController = navController
                                     )
                                 }
+
 
                             }
                         }
@@ -293,5 +295,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
     }
 }

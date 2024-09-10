@@ -15,7 +15,6 @@ class MainViewModel @Inject constructor(): ViewModel() {
     private val _qiblaState = MutableStateFlow(QiblaState())
     val qiblaState = _qiblaState.asStateFlow()
 
-    // Other properties and methods...
 
     fun updateQiblaDirection(newDirection: Float) {
         _qiblaState.update {
@@ -23,7 +22,6 @@ class MainViewModel @Inject constructor(): ViewModel() {
                 qiblaDirection = newDirection
             )
         }
-        Log.d("ViewModel direction", "Updating Qibla Direction to $newDirection")
     }
 
     fun updateCurrentDirection(newDirection: Float) {
@@ -32,7 +30,6 @@ class MainViewModel @Inject constructor(): ViewModel() {
                 currentDirection = newDirection
             )
         }
-        Log.d("ViewModel direction", "Updating currentDirection to $newDirection")
     }
 
 }

@@ -76,6 +76,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 import uz.turgunboyevjurabek.muslimapp.Model.madels.bugungilik.Bugungi
 import uz.turgunboyevjurabek.muslimapp.Model.madels.timeConverter.DateConverter
@@ -92,10 +93,10 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat", "RememberReturnType")
 @Composable
-fun MainScreen(navController: NavController) {
-
+fun MainScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -452,10 +453,11 @@ fun MainScreen(navController: NavController) {
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
 @Composable
 fun UiMain() {
-    MainScreen(navController = NavController(context = LocalContext.current))
+    MainScreen(navController = NavHostController(context = LocalContext.current))
 }
 
 @Composable
