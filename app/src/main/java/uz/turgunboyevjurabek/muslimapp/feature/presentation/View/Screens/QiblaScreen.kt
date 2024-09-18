@@ -1,5 +1,13 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +41,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
@@ -40,16 +49,25 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.drawableToBitmap
 import uz.turgunboyevjurabek.muslimapp.core.utils.vibrateDevice
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
+import uz.turgunboyevjurabek.qiblafinderexample.service.CompassSensorManager
+import uz.turgunboyevjurabek.qiblafinderexample.service.MyLocationManager
 
 @Composable
 fun QiblaScreen(
     modifier: Modifier = Modifier,
     qiblaDirection: Float,
     currentDirection: Float,
-    navController: NavController
-) {
+    navController: NavController,
+    compassSensorManager: CompassSensorManager,
+    locationManager: MyLocationManager,
 
+) {
     val context = LocalContext.current
+
+//    if (qiblaDirection.toInt()==0){
+//
+//    }
+    locationManager.getLastKnownLocation()
 
     val compassBgBitmap =
         remember { drawableToBitmap(context, R.drawable.compass3).asImageBitmap() }
@@ -91,7 +109,7 @@ fun QiblaScreen(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-                .padding(top = 20.dp)
+                .padding(top = 20.dp, start = 15.dp,end=15.dp)
                 .coloredShadow(
                     Color.Green,
                     alpha = if(isFacingQibla) 0.5f else 0.1f,
@@ -102,13 +120,25 @@ fun QiblaScreen(
             ),
             shape = MaterialTheme.shapes.large
         ) {
-            Text(
-                text = "Qibla: ${qiblaDirection.toInt()}°",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                modifier = modifier
-                    .padding(10.dp)
-            )
+            AnimatedContent(
+                targetState = qiblaDirection.toInt(),
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(durationMillis = 300)) with fadeOut(animationSpec = tween(durationMillis = 300))
+                }, label = ""
+            ) { targetState ->
+                Text(
+                    text = if (targetState == 0) {
+                        "Sizning mazilingiz aniqlanmoqda iltimos kutib turing :)"
+                    } else {
+                        "Qibla: $targetState°"
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = modifier
+                        .padding(10.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Box(

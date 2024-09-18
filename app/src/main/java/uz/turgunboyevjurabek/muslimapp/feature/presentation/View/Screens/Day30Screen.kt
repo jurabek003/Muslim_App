@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens
 
+import SelectRegionViewModel
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -60,18 +61,21 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DayOf30Screen() {
+fun DayOf30Screen(
+    selectRegionViewModel: SelectRegionViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
     ) {
+
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val viewModel = hiltViewModel<BirOylikLogika>()
         val monthList  = remember { mutableStateListOf<BirOylik>() }
         var selectDay=remember{ mutableStateOf(BirOylikItem()) }
         LaunchedEffect(key1 = true) {
-            viewModel.getMontData().observeForever {
+            viewModel.getMontData(selectRegionViewModel.region.value).observeForever {
                 when (it.status) {
                     LOADING -> {
 
@@ -94,7 +98,7 @@ fun DayOf30Screen() {
 @Preview(showSystemUi = true)
 @Composable
 private fun UI30() {
-    DayOf30Screen()
+//    DayOf30Screen()
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

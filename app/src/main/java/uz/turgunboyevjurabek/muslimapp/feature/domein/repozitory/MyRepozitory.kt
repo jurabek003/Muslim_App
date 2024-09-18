@@ -7,10 +7,10 @@ import uz.turgunboyevjurabek.muslimapp.feature.data.network.ApiService
 import javax.inject.Inject
 
 class MyRepozitor @Inject constructor(private val apiService: ApiService) {
-    suspend fun getTodayApi()=apiService.getTodayTime()
-    suspend fun getWeekApi()=apiService.getWeekTime()
+    suspend fun getTodayApi(region:String)=apiService.getTodayTime(region)
+    suspend fun getWeekApi(region:String)=apiService.getWeekTime(region)
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getMonthApi()=apiService.getMonthTime()
+    suspend fun getMonthApi(region:String)=apiService.getMonthTime(region)
 
 
 }

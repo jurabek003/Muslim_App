@@ -41,4 +41,10 @@ object NetworkModule {
         return retrofit.create(ApiService::class.java)
     }
 
+//    @Singleton
+//    @Provides
+//    fun provideRegion(selectRegionViewModel: SelectRegionViewModel):String{
+//        return selectRegionViewModel.region.value
+//    }
+
 }

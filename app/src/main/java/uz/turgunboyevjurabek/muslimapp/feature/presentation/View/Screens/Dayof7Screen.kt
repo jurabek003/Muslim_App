@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens
 
+import SelectRegionViewModel
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -59,7 +60,10 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Birhaftalik.BirHaftalikLogika
 
 @Composable
-fun Dayof7Screen(navController: NavController) {
+fun Dayof7Screen(
+    navController: NavController,
+    selectRegionViewModel: SelectRegionViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +76,7 @@ fun Dayof7Screen(navController: NavController) {
         }
 
         LaunchedEffect(key1 = true) {
-            weekViewModel.getWeekData().observeForever { result ->
+            weekViewModel.getWeekData(selectRegionViewModel.region.value).observeForever { result ->
                 when (result.status) {
                     Status.LOADING -> {
 

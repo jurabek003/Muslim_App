@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Bugungilik
 
+import SelectRegionViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,18 +15,20 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class BugungilkLogika @Inject constructor(private val myRepozitory: MyRepozitor):ViewModel() {
+class BugungilkLogika @Inject constructor(
+    private val myRepozitory: MyRepozitor,
+):ViewModel() {
 
     private val getLiveDataToday by lazy {
         MutableLiveData<Resource<Bugungi>>()
     }
 
-    fun todayApi():MutableLiveData<Resource<Bugungi>>{
+    fun todayApi(region:String):MutableLiveData<Resource<Bugungi>>{
         getLiveDataToday.postValue(Resource.loading("Loading at BugungilkLogika"))
         try {
             viewModelScope.launch {
                 val data=async{
-                    myRepozitory.getTodayApi()
+                    myRepozitory.getTodayApi(region)
                 }.await()
                 getLiveDataToday.postValue(Resource.success(data))
             }

@@ -14,12 +14,12 @@ import javax.inject.Inject
 @HiltViewModel
 class BirOylikLogika @Inject constructor(private val myRepozitor: MyRepozitor):ViewModel() {
     private val birOylikLiveData=MutableLiveData<Resource<BirOylik>>()
-    fun getMontData():MutableLiveData<Resource<BirOylik>>{
+    fun getMontData(region:String):MutableLiveData<Resource<BirOylik>>{
         viewModelScope.launch {
             birOylikLiveData.postValue(Resource.loading("Loading at BirOylikLogika"))
             try {
                 val getData=async {
-                    myRepozitor.getMonthApi()
+                    myRepozitor.getMonthApi(region)
                 }.await()
                 birOylikLiveData.postValue(Resource.success(getData))
             }catch (e:Exception){

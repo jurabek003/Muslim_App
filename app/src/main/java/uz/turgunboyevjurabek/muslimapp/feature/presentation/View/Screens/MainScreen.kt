@@ -1,5 +1,6 @@
 package uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens
 
+import SelectRegionViewModel
 import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.Toast
@@ -29,6 +30,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +53,8 @@ import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 
 import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.bugungilik.Bugungi
@@ -65,20 +69,26 @@ import java.util.Date
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SimpleDateFormat", "RememberReturnType")
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(
+    navController: NavHostController,
+    selectRegionViewModel: SelectRegionViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         val todayViewModel= hiltViewModel<BugungilkLogika>()
+
+        // Region o'zgarishini kuzatish
+        val region by selectRegionViewModel.region.collectAsState()
+
+
         val context = LocalContext.current
         var todayData by remember {
             mutableStateOf(Bugungi())
         }
-
-        Toast.makeText(context, "MM ${DateUtil.presentMonth}", Toast.LENGTH_SHORT).show()
-        LaunchedEffect(key1 = true) {
-            todayViewModel.todayApi().observeForever { result ->
+        LaunchedEffect(region) {
+            todayViewModel.todayApi(region).observeForever { result ->
                 when (result.status) {
                     Status.LOADING -> {
                         Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
@@ -426,7 +436,7 @@ fun MainScreen(navController: NavHostController) {
 @Preview(showSystemUi = true)
 @Composable
 fun UiMain() {
-    MainScreen(navController = NavHostController(context = LocalContext.current))
+//    MainScreen(navController = NavHostController(context = LocalContext.current))
 }
 
 @Composable

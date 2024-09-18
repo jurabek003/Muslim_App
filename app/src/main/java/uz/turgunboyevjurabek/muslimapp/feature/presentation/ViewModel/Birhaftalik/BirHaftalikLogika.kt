@@ -16,12 +16,12 @@ class BirHaftalikLogika @Inject constructor(private val myRepozitor: MyRepozitor
 
     private val getWeekLiveData=MutableLiveData<Resource<Birhaftalik>>()
 
-    fun getWeekData():MutableLiveData<Resource<Birhaftalik>>{
+    fun getWeekData(region:String):MutableLiveData<Resource<Birhaftalik>>{
         viewModelScope.launch {
             getWeekLiveData.postValue(Resource.loading("Loading at BirHaftalikLogika"))
             try {
                 val getData=async {
-                    myRepozitor.getWeekApi()
+                    myRepozitor.getWeekApi(region)
                 }.await()
                 getWeekLiveData.postValue(Resource.success(getData))
             }catch (e:Exception){

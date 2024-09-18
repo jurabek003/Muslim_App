@@ -291,7 +291,7 @@ fun ShapeCount(
 @Composable
 fun TasbexUI() {
     val navController = rememberNavController()
-//    val dataStore=(LocalContext.current as MyAplication).dataStore
+//    val dataStore=(LocalContext.current as MyApplication).dataStore
 //    TasbexScreen(navController = navController, CounterViewModel(dataStore = DataStore<Preferences>()))
 }
 /**

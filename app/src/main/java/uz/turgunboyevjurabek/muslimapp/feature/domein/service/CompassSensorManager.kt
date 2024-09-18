@@ -62,7 +62,7 @@ class CompassSensorManager @Inject constructor(
             )
             SensorManager.getOrientation(rotationMatrix, orientationAngles)
             val currentDirection = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
-            Log.d("CompassSensorManager", "Current Direction: $currentDirection") // Log current direction
+//            Log.d("CompassSensorManager", "Current Direction: $currentDirection") // Log current direction
             onDirectionChanged?.invoke(currentDirection)
         }
     }
