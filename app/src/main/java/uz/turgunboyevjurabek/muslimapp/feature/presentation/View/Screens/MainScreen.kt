@@ -64,6 +64,7 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.R
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.TimeListCard
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.MainCardShimmer
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.TimeListCardShimmer
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Bugungilik.BugungilkLogika
 import java.text.SimpleDateFormat
@@ -81,6 +82,7 @@ fun MainScreen(
             .fillMaxSize()
     ) {
         val todayViewModel= hiltViewModel<BugungilkLogika>()
+        val time= SimpleDateFormat("HH").format(Date())
 
         // Region o'zgarishini kuzatish
         val region by selectRegionViewModel.region.collectAsState()
@@ -88,7 +90,6 @@ fun MainScreen(
         var isLoading by remember {
             mutableStateOf(true)
         }
-
         val context = LocalContext.current
         var todayData by remember {
             mutableStateOf(Bugungi())
@@ -96,15 +97,14 @@ fun MainScreen(
         LaunchedEffect(region) {
             todayViewModel.todayApi(region).observeForever { result ->
                 when (result.status) {
-                    Status.LOADING -> {
-//                        isLoading= true
-                    }
+                    Status.LOADING -> {}
+
                     Status.ERROR -> {
                         Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                     }
                     Status.SUCCESS -> {
                         todayData= result.data!!
-//                        isLoading=false
+                        isLoading=false
                     }
                 }
             }
@@ -112,11 +112,6 @@ fun MainScreen(
         /**
          * vaqti yaqin namoz
          */
-        val time= SimpleDateFormat("HH").format(Date())
-        LaunchedEffect(key1 = true){
-            delay(1000000)
-            isLoading=false
-        }
         if (isLoading){
             MainCardShimmer()
         }else{
@@ -248,7 +243,12 @@ fun MainScreen(
         /**
          * 5 vaqtlik
          */
-        TimeListCard(todayData = todayData)
+        if (isLoading){
+            TimeListCardShimmer()
+        }else{
+            TimeListCard(todayData = todayData)
+        }
+
     }
 }
 @RequiresApi(Build.VERSION_CODES.O)
