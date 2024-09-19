@@ -56,11 +56,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
 
 import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.bugungilik.Bugungi
 import uz.turgunboyevjurabek.muslimapp.core.utils.DateUtil
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.R
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.TimeListCard
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.MainCardShimmer
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.shape.MorphPolygonShape
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Bugungilik.BugungilkLogika
 import java.text.SimpleDateFormat
@@ -82,6 +85,9 @@ fun MainScreen(
         // Region o'zgarishini kuzatish
         val region by selectRegionViewModel.region.collectAsState()
 
+        var isLoading by remember {
+            mutableStateOf(true)
+        }
 
         val context = LocalContext.current
         var todayData by remember {
@@ -91,13 +97,14 @@ fun MainScreen(
             todayViewModel.todayApi(region).observeForever { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+//                        isLoading= true
                     }
                     Status.ERROR -> {
                         Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                     }
                     Status.SUCCESS -> {
                         todayData= result.data!!
+//                        isLoading=false
                     }
                 }
             }
@@ -106,330 +113,142 @@ fun MainScreen(
          * vaqti yaqin namoz
          */
         val time= SimpleDateFormat("HH").format(Date())
-        ElevatedCard(
-            modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp, top = 20.dp)
-                .height(250.dp),
-            shape = RoundedCornerShape(20.dp),
-            elevation = CardDefaults.cardElevation(10.dp)
-        ) {
-            Row(
+        LaunchedEffect(key1 = true){
+            delay(1000000)
+            isLoading=false
+        }
+        if (isLoading){
+            MainCardShimmer()
+        }else{
+            ElevatedCard(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .paint(
-                        painter = when (time.toInt()) {
-                            in 1..5 -> {
-                                painterResource(id = R.drawable.img_1)
-                            }
-
-                            in 8..14 -> {
-                                painterResource(id = R.drawable.img_2)
-                            }
-
-                            in 14..17 -> {
-                                painterResource(id = R.drawable.img_3)
-                            }
-
-                            in 17..20 -> {
-                                painterResource(id = R.drawable.img_4)
-                            }
-
-                            in 20..22 -> {
-                                painterResource(id = R.drawable.img_5)
-                            }
-
-                            else -> {
-                                painterResource(id = R.drawable.img_1)
-                            }
-                        },
-                        contentScale = ContentScale.FillBounds
-                    ),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(start = 15.dp, end = 15.dp, top = 20.dp)
+                    .height(250.dp),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(10.dp)
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .paint(
+                            painter = when (time.toInt()) {
+                                in 1..5 -> {
+                                    painterResource(id = R.drawable.img_1)
+                                }
 
-                Column {
-                    Text(
-                        text = when(time.toInt()){
-                            in 1..5->{
-                                "Bomdod"
-                            }
-                            in 8..14->{
-                                "Peshin"
-                            }
-                            in 14..16->{
-                                "Asr"
-                            }
-                            in 17..20 ->{
-                                "Shom"
-                            }
-                            in 20..22 ->{
-                                "Hufton"
-                            }
-                            else->{
-                                "Bomdod"
-                            } },
-                        fontSize = 40.sp,
-                        fontFamily = FontFamily.Serif,
-                        color = Color.White,
-                        modifier = Modifier.padding(start = 20.dp)
-                    )
+                                in 8..14 -> {
+                                    painterResource(id = R.drawable.img_2)
+                                }
 
-                    Text(
-                        text = todayData?.date.toString(),
-                        fontSize = 20.sp,
-                        fontFamily = FontFamily.Serif,
-                        color = Color.White,
-                        modifier = Modifier.padding(start = 20.dp, top = 25.dp)
-                    )
-                    Text(
-                        text = when(time.toInt()){
-                            in 5..8->{
-                                todayData.times?.quyosh.toString()
-                            }
-                            in 8..13->{
-                                todayData.times?.peshin.toString()
-                            }
-                            in 14..16->{
-                                todayData.times?.asr.toString()
-                            }
-                            in 17..19 ->{
-                                todayData.times?.shomIftor.toString()
-                            }
-                            in 20..23 ->{
-                                todayData.times?.hufton.toString()
-                            }
-                            else->{
-                                todayData.times?.tongSaharlik.toString()
-                            } },
-                        fontSize = 30.sp,
-                        fontFamily = FontFamily.Serif,
-                        color = Color.White,
-                        modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                                in 14..17 -> {
+                                    painterResource(id = R.drawable.img_3)
+                                }
+
+                                in 17..20 -> {
+                                    painterResource(id = R.drawable.img_4)
+                                }
+
+                                in 20..22 -> {
+                                    painterResource(id = R.drawable.img_5)
+                                }
+
+                                else -> {
+                                    painterResource(id = R.drawable.img_1)
+                                }
+                            },
+                            contentScale = ContentScale.FillBounds
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = todayData.region.toString(),
-                        fontSize = 25.sp,
-                        fontFamily = FontFamily.Serif,
-                        color = Color.White,
-                        modifier = Modifier.padding(end = 20.dp, top = 20.dp)
-                    )
-                    Text(
-                        text = todayData.weekday.toString(),
-                        fontSize = 20.sp,
-                        fontFamily = FontFamily.Serif,
-                        color = Color.White,
-                        modifier = Modifier.padding(end = 20.dp, top = 10.dp)
-                    )
 
+                    Column {
+                        Text(
+                            text = when(time.toInt()){
+                                in 1..5->{
+                                    "Bomdod"
+                                }
+                                in 8..14->{
+                                    "Peshin"
+                                }
+                                in 14..16->{
+                                    "Asr"
+                                }
+                                in 17..20 ->{
+                                    "Shom"
+                                }
+                                in 20..22 ->{
+                                    "Hufton"
+                                }
+                                else->{
+                                    "Bomdod"
+                                } },
+                            fontSize = 40.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp)
+                        )
+
+                        Text(
+                            text = todayData?.date.toString(),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp, top = 25.dp)
+                        )
+                        Text(
+                            text = when(time.toInt()){
+                                in 5..8->{
+                                    todayData.times?.quyosh.toString()
+                                }
+                                in 8..13->{
+                                    todayData.times?.peshin.toString()
+                                }
+                                in 14..16->{
+                                    todayData.times?.asr.toString()
+                                }
+                                in 17..19 ->{
+                                    todayData.times?.shomIftor.toString()
+                                }
+                                in 20..23 ->{
+                                    todayData.times?.hufton.toString()
+                                }
+                                else->{
+                                    todayData.times?.tongSaharlik.toString()
+                                } },
+                            fontSize = 30.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 20.dp, top = 10.dp)
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = todayData.region.toString(),
+                            fontSize = 25.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(end = 20.dp, top = 20.dp)
+                        )
+                        Text(
+                            text = todayData.weekday.toString(),
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
+                            modifier = Modifier.padding(end = 20.dp, top = 10.dp)
+                        )
+
+                    }
                 }
             }
         }
-//        val scrollableState = rememberScrollableState(consumeScrollDelta = )
-        
         /**
          * 5 vaqtlik
          */
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-        ) {
-
-            /**
-             * Bomdod
-             */
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
-                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        ,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                   Column(
-                       modifier = Modifier
-                           .padding(start = 10.dp),
-                       horizontalAlignment = Alignment.CenterHorizontally,
-                       verticalArrangement = Arrangement.Center
-                   ) {
-                       Text(text = "Bomdod", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                   }
-                    Column(
-                        modifier = Modifier
-                            .padding(end=10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Saharlik  - ${todayData.times?.tongSaharlik}")
-                        Text(text = "Quyosh    - ${todayData.times?.quyosh}")
-                    }
-
-                }
-            }
-
-
-            /**
-             * Peshin
-             */
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
-                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        ,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Peshin", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(end=10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Bugun - ${todayData.times?.peshin} da")
-                    }
-
-                }
-            }
-
-
-            /**
-             * Asir
-             */
-             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
-                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        ,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Asir", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(end=10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Bugun - ${todayData.times?.asr} da")
-                    }
-
-                }
-            }
-
-
-            /**
-             * Shom
-             */
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(start = 15.dp, end = 15.dp, top = 25.dp)
-                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        ,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Shom", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(end=10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Iftor - ${todayData.times?.shomIftor} da")
-                    }
-
-                }
-            }
-
-
-            /**
-             * Hufton
-             */
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(start = 15.dp, end = 15.dp, top = 25.dp, bottom = 5.dp)
-                    .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        ,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Hufton", fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .padding(end=10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Bugun - ${todayData.times?.hufton} da")
-                    }
-
-                }
-            }
-        }
+        TimeListCard(todayData = todayData)
     }
 }
 @RequiresApi(Build.VERSION_CODES.O)
