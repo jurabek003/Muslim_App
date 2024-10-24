@@ -21,8 +21,6 @@ interface ApiService {
     ): Bugungi
 
 
-
-
     /**
      * Bir Haftalik Namoz vaqtlari
      */

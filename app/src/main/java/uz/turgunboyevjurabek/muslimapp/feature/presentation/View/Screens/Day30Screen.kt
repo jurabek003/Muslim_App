@@ -8,11 +8,14 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
@@ -36,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +56,7 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.DateUtil
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status.*
 import uz.turgunboyevjurabek.muslimapp.R
+import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Calendar.CalendarWidget
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Biroylik.BirOylikLogika
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Calendar.CalendarViewModel
@@ -104,6 +109,9 @@ private fun UI30() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SelectDay(selectDay: MutableState<BirOylikItem>) {
+    val elevatedCardShadowColor=if (isSystemInDarkTheme()) Color.Green else Color.Black
+    Spacer(modifier = Modifier.height(10.dp))
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,7 +126,13 @@ fun SelectDay(selectDay: MutableState<BirOylikItem>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp)
+            .graphicsLayer {
+                shape = RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp)
+                spotShadowColor = elevatedCardShadowColor
+                shadowElevation = 60f
+                clip = true
+            }
+
             .clip(RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp))
             .wrapContentHeight(unbounded = true)
     ) {
@@ -229,9 +243,17 @@ fun CalendarView(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val elevatedCardShadowColor=if (isSystemInDarkTheme()) Color.Green else Color.Black
+
     Card(
         modifier = Modifier
             .padding(vertical = 10.dp)
+            .graphicsLayer {
+                shape = RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp)
+                spotShadowColor = elevatedCardShadowColor
+                shadowElevation = 60f
+                clip = true
+            }
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp))
             .wrapContentHeight(unbounded = true)

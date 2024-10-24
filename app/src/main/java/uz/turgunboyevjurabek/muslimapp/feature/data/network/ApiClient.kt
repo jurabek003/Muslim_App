@@ -9,7 +9,6 @@ import uz.turgunboyevjurabek.muslimapp.core.utils.ConsItem.BASE_URL
 object ApiClient {
     private fun getRetrofit(): Retrofit {
 
-
             return  Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

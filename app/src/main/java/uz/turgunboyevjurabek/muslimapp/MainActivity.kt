@@ -15,7 +15,6 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.widget.Toast
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,7 +51,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.Dayof7S
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.MainScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.QiblaScreen
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.Screens.TasbexScreen
-import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.UIutils.SheetDialogUI
+import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.SheetDialogUI
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.DataStorePreferencesViewModel.CounterViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.ViewModel.Qibla.MainViewModel
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.theme.MuslimAppTheme
@@ -147,7 +146,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     ) { innerPadding ->
-//                        Toast.makeText(context, ChangeOrSelectRegion.dataStoreRegion.region.toString(), Toast.LENGTH_SHORT).show()
                         Column(
                             modifier = Modifier
                                 .padding(innerPadding)

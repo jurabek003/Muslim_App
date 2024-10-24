@@ -15,22 +15,24 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    @Singleton
-    @Provides
-    fun provideBaseUrl():String= ConsItem.BASE_URL
 
     @Singleton
     @Provides
-    fun provideGetRetrofit(string: String):Retrofit{
+    fun provideBaseUrl():String = ConsItem.BASE_URL
+
+    @Singleton
+    @Provides
+    fun provideGetRetrofit(string: String): Retrofit {
+
         val okHttpClient=OkHttpClient().newBuilder()
-            .connectTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
         return Retrofit.Builder()
-            .client(okHttpClient)
             .baseUrl(string)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +27,7 @@ fun TimeListCard(modifier: Modifier = Modifier,todayData:Bugungi) {
 
     Column(
         modifier = Modifier
+            .clipToBounds()  // Itemlar kartaning ostida yashirilishi uchun
             .verticalScroll(rememberScrollState())
     ) {
         /**
@@ -35,7 +37,7 @@ fun TimeListCard(modifier: Modifier = Modifier,todayData:Bugungi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 25.dp)
                 .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
         ) {
             Row(
@@ -72,7 +74,7 @@ fun TimeListCard(modifier: Modifier = Modifier,todayData:Bugungi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 25.dp)
                 .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
         ) {
             Row(
@@ -108,13 +110,12 @@ fun TimeListCard(modifier: Modifier = Modifier,todayData:Bugungi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 25.dp)
                 .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                ,
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -144,7 +145,7 @@ fun TimeListCard(modifier: Modifier = Modifier,todayData:Bugungi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(start = 15.dp, end = 15.dp, top = 25.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 25.dp)
                 .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
         ) {
             Row(
@@ -180,7 +181,7 @@ fun TimeListCard(modifier: Modifier = Modifier,todayData:Bugungi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(start = 15.dp, end = 15.dp, top = 25.dp, bottom = 5.dp)
+                .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 5.dp)
                 .clip(RoundedCornerShape(topEnd = 40.dp, bottomStart = 40.dp)),
         ) {
             Row(

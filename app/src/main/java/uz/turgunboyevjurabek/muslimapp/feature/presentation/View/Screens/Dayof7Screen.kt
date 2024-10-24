@@ -179,7 +179,6 @@ fun ListUi(birhaftalikItem: BirhaftalikItem) {
                         .constrainAs(region) {
                             top.linkTo(parent.top, margin = 10.dp)
                             start.linkTo(parent.start, margin = 10.dp)
-
                         }
                 )
                 Text(

@@ -13,7 +13,6 @@ import dagger.hilt.components.SingletonComponent
 import uz.turgunboyevjurabek.qiblafinderexample.service.CompassSensorManager
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {

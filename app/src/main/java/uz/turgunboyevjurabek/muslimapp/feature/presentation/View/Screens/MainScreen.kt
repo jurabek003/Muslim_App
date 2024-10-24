@@ -12,10 +12,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
@@ -62,6 +65,7 @@ import uz.turgunboyevjurabek.muslimapp.feature.domein.madels.bugungilik.Bugungi
 import uz.turgunboyevjurabek.muslimapp.core.utils.DateUtil
 import uz.turgunboyevjurabek.muslimapp.core.utils.Status
 import uz.turgunboyevjurabek.muslimapp.R
+import uz.turgunboyevjurabek.muslimapp.core.utils.coloredShadow
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.TimeListCard
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.MainCardShimmer
 import uz.turgunboyevjurabek.muslimapp.feature.presentation.View.components.shimmers.TimeListCardShimmer
@@ -109,6 +113,8 @@ fun MainScreen(
                 }
             }
         }
+        val elevatedCardShadowColor=if (isSystemInDarkTheme()) Color.White else Color.Black
+
         /**
          * vaqti yaqin namoz
          */
@@ -117,9 +123,17 @@ fun MainScreen(
         }else{
             ElevatedCard(
                 modifier = Modifier
-                    .padding(start = 15.dp, end = 15.dp, top = 20.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 20.dp)
+                    .zIndex(1f)
+                    .coloredShadow(
+                        color = elevatedCardShadowColor,
+                        alpha = 0.5f,
+                        borderRadius = 20.dp,
+                        shadowRadius = 20.dp,
+                        offsetX = 0.dp,
+                    )
                     .height(250.dp),
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(25.dp),
                 elevation = CardDefaults.cardElevation(10.dp)
             ) {
                 Row(
@@ -240,6 +254,7 @@ fun MainScreen(
                 }
             }
         }
+
         /**
          * 5 vaqtlik
          */
