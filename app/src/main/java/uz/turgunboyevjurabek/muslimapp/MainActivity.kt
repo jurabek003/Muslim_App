@@ -133,6 +133,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize(),
                         topBar = {
                             MyTopBar(
+                                modifier = Modifier,
                                 navController = navController,
                                 screenName = screenName,
                                 onSheetClick = {

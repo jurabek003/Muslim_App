@@ -5,9 +5,17 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -113,7 +121,26 @@ fun MainScreen(
                 }
             }
         }
+        val color=if (isSystemInDarkTheme()) Color.White else Color.Black
         val elevatedCardShadowColor=if (isSystemInDarkTheme()) Color.White else Color.Black
+        val infiniteTransition = rememberInfiniteTransition(label = "")
+//         val color by infiniteTransition.animateColor(
+//             initialValue = if (isSystemInDarkTheme()) Color.Green else Color.Black,
+//             targetValue = if (isSystemInDarkTheme()) Color.Blue else Color.White,
+//             animationSpec = infiniteRepeatable(
+//                 tween(durationMillis = 2000),
+//                 repeatMode = RepeatMode.Reverse
+//             ), label = "allambalo"
+//         )
+//        val offsetX  by infiniteTransition.animateFloat(
+//            initialValue = 10f,
+//            targetValue = -10f,
+//            animationSpec = infiniteRepeatable(
+//                tween(durationMillis = 2000),
+//                repeatMode = RepeatMode.Reverse
+//            ),
+//            label = ""
+//        )
 
         /**
          * vaqti yaqin namoz
@@ -123,14 +150,15 @@ fun MainScreen(
         }else{
             ElevatedCard(
                 modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 20.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 25.dp)
                     .zIndex(1f)
                     .coloredShadow(
-                        color = elevatedCardShadowColor,
+                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                         alpha = 0.5f,
-                        borderRadius = 20.dp,
-                        shadowRadius = 20.dp,
-                        offsetX = 0.dp,
+                        borderRadius = 30.dp,
+                        shadowRadius = 30.dp,
+                        offsetX = 10.dp,
+                        offsetY = 10.dp
                     )
                     .height(250.dp),
                 shape = RoundedCornerShape(25.dp),
@@ -183,7 +211,7 @@ fun MainScreen(
                                 in 14..16->{
                                     "Asr"
                                 }
-                                in 17..20 ->{
+                                in 17..19 ->{
                                     "Shom"
                                 }
                                 in 20..22 ->{

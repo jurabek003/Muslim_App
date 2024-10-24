@@ -129,7 +129,7 @@ fun SelectDay(selectDay: MutableState<BirOylikItem>) {
             .graphicsLayer {
                 shape = RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp)
                 spotShadowColor = elevatedCardShadowColor
-                shadowElevation = 60f
+                shadowElevation = 20f
                 clip = true
             }
 
@@ -251,7 +251,7 @@ fun CalendarView(
             .graphicsLayer {
                 shape = RoundedCornerShape(topStart = 80.dp, bottomEnd = 80.dp)
                 spotShadowColor = elevatedCardShadowColor
-                shadowElevation = 60f
+                shadowElevation = 40f
                 clip = true
             }
             .fillMaxWidth()
